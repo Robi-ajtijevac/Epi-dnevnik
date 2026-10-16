@@ -24,7 +24,7 @@ $("#send").onclick=async()=>{
   const t=buildCsv();if(!t){toast("Nema unosa za slanje");return}
   const file=new File([t],fname(),{type:"text/csv"});
   try{
-    if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Dnevnik simptoma i napadaja"});
+    if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Dnevnik"});
     else{download(fname(),t,"text/csv;charset=utf-8");toast("Dijeljenje nije podržano. Datoteka je spremljena.")}
   }catch(e){if(e.name!=="AbortError")toast("Nije moguće otvoriti izbornik za dijeljenje")}
 };

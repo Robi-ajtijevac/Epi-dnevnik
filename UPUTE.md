@@ -1,4 +1,4 @@
-# Dnevnik – verzija 9 (više datoteka)
+# Dnevnik – verzija 10 (više datoteka)
 
 ## Što je u mapi
 - index.html, sw.js, manifest.json, icon-192.png, icon-512.png
@@ -17,6 +17,6 @@ Otvorite aplikaciju s internetom. Pojavit će se traka „Osvježi sada”, prit
 
 ## Kod svake sljedeće izmjene
 Uvijek se mijenjaju ova dva broja zajedno:
-- index.html: <meta name="app-version" content="9"> → 10
-- sw.js: const C="dnevnik-v9" → "dnevnik-v10"
+- index.html: <meta name="app-version" content="10"> → 11
+- sw.js: const C="dnevnik-v10" → "dnevnik-v11"
 Ako dodate novu datoteku, dopišite je i na popis FILES u sw.js.
