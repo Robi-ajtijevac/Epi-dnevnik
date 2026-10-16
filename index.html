@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dnevnik">
+<meta name="theme-color" content="#2f7f79">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Dnevnik simptoma i napadaja</title>
+<style>
+:root{--bg:#f3f6f5;--card:#fff;--ink:#17302f;--mute:#5c7170;--line:#d5e0de;--sym:#2f7f79;--sei:#9a4a3c;--ok:#17302f}
+@media (prefers-color-scheme:dark){:root{--bg:#10191a;--card:#182526;--ink:#e6f0ee;--mute:#93aaa8;--line:#2b3f40;--sym:#5ec2ba;--sei:#e59a8a;--ok:#e6f0ee}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:560px;margin:0 auto;padding:24px 18px 60px}
+h1{font-size:1.6rem;margin:8px 0 4px}h2{font-size:1.3rem;margin:4px 0 16px}
+p.sub{color:var(--mute);margin:0 0 24px}
+.hide{display:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sym);outline-offset:2px}
+.big{display:block;width:100%;text-align:left;border:0;border-radius:18px;padding:26px 22px;margin-bottom:14px;color:#fff;font-size:1.4rem;font-weight:700}
+.big small{display:block;font-weight:400;font-size:1rem;opacity:.9}
+.big.sym{background:var(--sym)}.big.sei{background:var(--sei)}
+@media (prefers-color-scheme:dark){.big{color:#0b1415}}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;padding:10px 0;font-size:1rem}
+.back{margin-bottom:6px}
+label.f{display:block;font-weight:700;margin:22px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:9px 16px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input[type=number],input[type=datetime-local],textarea{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px}
+input[type=number]{width:90px}textarea{width:100%;min-height:80px}
+.row{display:flex;gap:10px;align-items:center}
+.when{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.save{margin-top:28px;width:100%;border:0;border-radius:14px;padding:16px;font-weight:700;font-size:1.15rem;background:var(--ok);color:var(--bg)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center;max-width:90%}
+.toast.on{opacity:1}
+.entry{background:var(--card);border-left:6px solid var(--sym);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.entry.seizure{border-color:var(--sei)}
+.entry b{display:block}.entry span{color:var(--mute);font-size:.95rem}
+.entry button{float:right;border:0;background:none;color:var(--mute);text-decoration:underline}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 20px}
+.tools button{border:2px solid var(--ink);background:none;border-radius:12px;padding:10px 16px;font-weight:700}
+.tools button.primary{background:var(--ink);color:var(--bg)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+
+<section id="home">
+  <h1>Dnevnik simptoma i napadaja</h1>
+  <p class="sub">Što želite zabilježiti?</p>
+  <button class="big sym" data-go="symptom">Simptom<small>Glavobolja, trnci, aura…</small></button>
+  <button class="big sei" data-go="seizure">Napadaj<small>Trajanje, vrsta, okidači</small></button>
+  <button class="link" data-go="history">Pregled unosa i izvoz</button>
+</section>
+
+<section id="symptom" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Zabilježi simptom</h2>
+  <label class="f">Što ste primijetili? (odaberite sve što vrijedi)</label>
+  <div class="chips" data-name="symptoms" data-multi="1"></div>
+  <label class="f">Koliko jako?</label>
+  <div class="chips" data-name="severity"></div>
+  <div class="tslot"></div>
+  <label class="f" for="n1">Bilješke (neobavezno)</label>
+  <textarea id="n1" data-name="notes"></textarea>
+  <button class="save" data-save="symptom">Spremi simptom</button>
+</section>
+
+<section id="seizure" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Zabilježi napadaj</h2>
+  <div class="tslot"></div>
+  <label class="f">Koliko je trajao?</label>
+  <div class="row"><input type="number" inputmode="numeric" min="0" id="min" aria-label="Minute" placeholder="0"> min
+  <input type="number" inputmode="numeric" min="0" max="59" id="sec" aria-label="Sekunde" placeholder="0"> s</div>
+  <label class="f">Kakav je bio?</label>
+  <div class="chips" data-name="kind"></div>
+  <label class="f">Gubitak svijesti?</label>
+  <div class="chips" data-name="aware"></div>
+  <label class="f">Mogući okidači (odaberite sve što vrijedi)</label>
+  <div class="chips" data-name="triggers" data-multi="1"></div>
+  <label class="f">Nakon napadaja (odaberite sve što vrijedi)</label>
+  <div class="chips" data-name="after" data-multi="1"></div>
+  <label class="f" for="n2">Bilješke (neobavezno)</label>
+  <textarea id="n2" data-name="notes"></textarea>
+  <button class="save" data-save="seizure">Spremi napadaj</button>
+</section>
+
+<section id="history" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Povijest unosa</h2>
+  <div class="tools">
+    <button id="send" class="primary">Pošalji datoteku…</button>
+    <button id="csv">Spremi na uređaj</button>
+    <button id="json">Sigurnosna kopija</button>
+  </div>
+  <p class="sub" style="font-size:.95rem">„Pošalji datoteku” otvara izbornik za dijeljenje: WhatsApp, Gmail, Poruke i drugo. Datoteka je tablica (.csv) koja se otvara u Excelu na računalu i na mobitelu.</p>
+  <div id="list"></div>
+</section>
+
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<template id="tpl">
+  <label class="f">Kada</label>
+  <div class="when"><span class="wtxt"></span><button class="link wbtn" type="button">Promijeni vrijeme</button>
+  <input type="datetime-local" class="winp hide" aria-label="Datum i vrijeme"></div>
+</template>
+
+<script>
+const OPTS={
+ symptoms:["Glavobolja","Trnci","Vrtoglavica","Mučnina","Aura","Déjà vu","Promjene vida","Čudan miris ili okus","Smetenost","Umor","Tjeskoba ili strah","Trzanje mišića","Drugo"],
+ severity:["Blago","Umjereno","Jako"],
+ kind:["Nisam siguran/na","Zagledanost / odsutnost","Konvulzivni","Jedna strana tijela","Pad","Drugo"],
+ aware:["Da","Ne","Nisam siguran/na"],
+ triggers:["Nedostatak sna","Stres","Propuštena terapija","Bolest","Treperavo svjetlo","Alkohol","Nepoznato"],
+ after:["Pospanost","Smetenost","Glavobolja","Bolni mišići","Brz oporavak"]
+};
+const KEY="dnevnikSimptoma.v1";
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return[]}};
+const store=a=>{try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){toast("Spremanje u pregledniku nije uspjelo")}};
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const pad=n=>String(n).padStart(2,"0");
+const local=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const fmt=d=>d.toLocaleString("hr-HR",{weekday:"short",day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)}
+
+$$(".chips").forEach(c=>{OPTS[c.dataset.name].forEach(o=>{
+  const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=o;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{
+    if(!c.dataset.multi)$$(".chip",c).forEach(x=>x!==b&&x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
+  };c.append(b)})});
+
+let clocks=[];
+$$(".tslot").forEach(s=>{
+  s.append($("#tpl").content.cloneNode(true));
+  const o={txt:$(".wtxt",s),btn:$(".wbtn",s),inp:$(".winp",s),manual:false};
+  o.btn.onclick=()=>{o.manual=true;o.inp.value=local(new Date());o.inp.classList.remove("hide");o.btn.classList.add("hide");o.txt.textContent="Postavi vrijeme:"};
+  s._o=o;clocks.push(o);
+});
+function tick(){clocks.forEach(o=>{if(!o.manual)o.txt.textContent="Sada · "+fmt(new Date())})}
+setInterval(tick,15000);tick();
+
+const getWhen=s=>{const o=$(".tslot",s)._o;return o.manual&&o.inp.value?new Date(o.inp.value):new Date()};
+const pick=(s,n)=>$$(`[data-name="${n}"] .chip[aria-pressed=true]`,s).map(b=>b.textContent);
+
+function show(id){
+  $$("main > section").forEach(s=>s.classList.toggle("hide",s.id!==id));
+  if(id==="history")renderList();
+  window.scrollTo(0,0);
+}
+$$("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+
+function reset(s){
+  $$(".chip",s).forEach(b=>b.setAttribute("aria-pressed","false"));
+  $$("textarea,input[type=number]",s).forEach(i=>i.value="");
+  const o=$(".tslot",s)._o;o.manual=false;o.inp.classList.add("hide");o.btn.classList.remove("hide");tick();
+}
+
+$$("[data-save]").forEach(btn=>btn.onclick=()=>{
+  const type=btn.dataset.save,s=$("#"+type),a=load();
+  const e={id:Date.now(),type,when:getWhen(s).toISOString(),notes:$("textarea",s).value.trim()};
+  if(type==="symptom"){
+    e.symptoms=pick(s,"symptoms");e.severity=pick(s,"severity")[0]||"";
+    if(!e.symptoms.length){toast("Odaberite barem jedan simptom");return}
+  }else{
+    e.seconds=(+$("#min").value||0)*60+(+$("#sec").value||0);
+    e.kind=pick(s,"kind")[0]||"";e.aware=pick(s,"aware")[0]||"";
+    e.triggers=pick(s,"triggers");e.after=pick(s,"after");
+  }
+  a.push(e);store(a);reset(s);toast("Spremljeno");show("home");
+});
+
+const dur=sec=>sec?`${Math.floor(sec/60)} min ${sec%60} s`:"trajanje nije upisano";
+function renderList(){
+  const a=load().sort((x,y)=>new Date(y.when)-new Date(x.when)),L=$("#list");L.innerHTML="";
+  if(!a.length){L.innerHTML='<p class="sub">Još nema unosa. Spremljeni unosi pojavit će se ovdje.</p>';return}
+  a.forEach(e=>{
+    const d=document.createElement("div");d.className="entry "+e.type;
+    const t=e.type==="symptom"?(e.symptoms.join(", ")+(e.severity?" ("+e.severity.toLowerCase()+")":"")):("Napadaj · "+dur(e.seconds)+(e.kind?" · "+e.kind:""));
+    d.innerHTML=`<button>Obriši</button><b></b><span></span>`;
+    $("b",d).textContent=t;$("span",d).textContent=fmt(new Date(e.when))+(e.notes?" · "+e.notes:"");
+    $("button",d).onclick=()=>{if(confirm("Obrisati ovaj unos?")){store(load().filter(x=>x.id!==e.id));renderList()}};
+    L.append(d);
+  });
+}
+
+function download(name,text,mime){
+  const u=URL.createObjectURL(new Blob([text],{type:mime}));
+  const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1000);
+}
+// Točka-zarez kao razdjelnik: tako Excel s hrvatskim postavkama ispravno otvara stupce
+const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+function buildCsv(){
+  const a=load().sort((x,y)=>new Date(x.when)-new Date(y.when));
+  if(!a.length)return null;
+  const head=["Datum","Vrijeme","Vrsta","Simptomi","Jačina","Trajanje (sekunde)","Vrsta napadaja","Gubitak svijesti","Okidači","Nakon napadaja","Bilješke"];
+  const rows=a.map(e=>{const d=new Date(e.when);
+    return [`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,`${pad(d.getHours())}:${pad(d.getMinutes())}`,
+    e.type==="symptom"?"Simptom":"Napadaj",(e.symptoms||[]).join(", "),e.severity||"",e.seconds??"",e.kind||"",e.aware||"",
+    (e.triggers||[]).join(", "),(e.after||[]).join(", "),e.notes||""].map(q).join(";")});
+  return "\ufeff"+[head.map(q).join(";"),...rows].join("\r\n");
+}
+const fname=()=>"dnevnik-"+local(new Date()).slice(0,10)+".csv";
+$("#csv").onclick=()=>{
+  const t=buildCsv();if(!t){toast("Nema unosa za izvoz");return}
+  download(fname(),t,"text/csv;charset=utf-8");
+};
+$("#send").onclick=async()=>{
+  const t=buildCsv();if(!t){toast("Nema unosa za slanje");return}
+  const file=new File([t],fname(),{type:"text/csv"});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:"Dnevnik simptoma i napadaja"});
+    }else{download(fname(),t,"text/csv;charset=utf-8");toast("Dijeljenje nije podržano. Datoteka je spremljena.")}
+  }catch(e){if(e.name!=="AbortError")toast("Nije moguće otvoriti izbornik za dijeljenje")}
+};
+$("#json").onclick=()=>download("dnevnik-sigurnosna-kopija.json",JSON.stringify(load(),null,2),"application/json");
+
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
