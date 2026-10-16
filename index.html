@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="4">
+<meta name="app-version" content="6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dnevnik">
@@ -40,7 +40,7 @@ label.f{display:block;font-weight:700;margin:22px 0 8px}
 .chip:nth-child(6n+1)[aria-pressed=true]{background:#ffb3c1}.chip:nth-child(6n+2)[aria-pressed=true]{background:#ffd3a3}
 .chip:nth-child(6n+3)[aria-pressed=true]{background:#fff2a8}.chip:nth-child(6n+4)[aria-pressed=true]{background:#b9f0c9}
 .chip:nth-child(6n+5)[aria-pressed=true]{background:#b3d9ff}.chip:nth-child(6n)[aria-pressed=true]{background:#d9c5ff}
-input[type=number],input[type=datetime-local],textarea{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px}
+input[type=number],input[type=datetime-local],input[type=text],input[type=tel],input[type=time],input[type=date],textarea{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px}
 input[type=number]{width:90px}textarea{width:100%;min-height:80px}
 .row{display:flex;gap:10px;align-items:center}
 .when{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -60,7 +60,12 @@ input[type=number]{width:90px}textarea{width:100%;min-height:80px}
 .empty{text-align:center;color:var(--mute)}.empty .ck{width:90px;height:90px}
 #upd{position:fixed;top:0;left:0;right:0;z-index:9;background:var(--ink);color:#fff;padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between}
 #upd button{border:0;border-radius:12px;background:var(--yel);color:var(--ink);font-weight:700;padding:9px 16px;white-space:nowrap}
-.c5{background:#c3a6ff}
+.c5{background:#c3a6ff}.c6{background:#ffb36b}.c7{background:#7fe3d6}.c8{background:#fff;border:3px solid #ff5c7a}
+.full{width:100%}
+.card{background:var(--card);border:3px solid #ff5c7a;border-radius:20px;padding:16px 18px}
+.card h3{margin:0 0 6px;color:#d6304f;font-size:1.15rem}
+.card .k{color:var(--mute);font-size:.85rem;margin-top:12px}.card .v{font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
+.card a.call{display:inline-block;margin-top:6px;padding:10px 16px;border-radius:12px;background:var(--green);color:var(--ink);text-decoration:none;font-weight:700;box-shadow:0 3px 0 rgba(90,42,66,.15)}
 .big{padding:22px 100px 22px 22px}
 .big .ck{animation:sway 3s ease-in-out infinite alternate}
 .big:nth-of-type(2n) .ck{animation-delay:-1.2s}.big:nth-of-type(3n) .ck{animation-delay:-2.1s}
@@ -124,9 +129,12 @@ select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--
   <p class="sub">Što želite zabilježiti?</p>
   <button class="big c1" data-go="symptom">Simptom<small>Glavobolja, trnci, aura…</small><svg class="ck"><use href="#ck"/></svg></button>
   <button class="big c2" data-go="seizure">Napadaj<small>Trajanje, vrsta, okidači</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c6" data-go="today">Danas<small id="todaysub">Dodaj ili uredi trajanje</small><svg class="ck"><use href="#ck"/></svg></button>
   <button class="big c3" data-go="meds">Lijekovi<small>Jutarnja i večernja doza</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c7" data-go="checkin">Dnevna provjera<small>San, raspoloženje, stres</small><svg class="ck"><use href="#ck"/></svg></button>
   <button class="big c5" data-go="summ">Mjesečni sažetak<small>Pregled za liječnika</small><svg class="ck"><use href="#ck"/></svg></button>
   <button class="big c4" data-go="history">Povijest i izvoz<small>Kalendar, uređivanje, slanje</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c8" data-go="card">Hitna kartica<small>Podaci i kontakti za hitne slučajeve</small><svg class="ck"><use href="#ck"/></svg></button>
   <div class="field" aria-hidden="true">
     <div class="walker" style="--a:2%;--b:72%;--t:9s;--w:52px"><div class="fl"><svg class="ck"><use href="#ck"/></svg></div></div>
     <div class="walker" style="--a:20%;--b:78%;--t:13s;--w:64px"><div class="fl"><svg class="ck"><use href="#ck"/></svg></div></div>
@@ -142,6 +150,10 @@ select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--
   <div class="chips" data-name="symptoms" data-multi="1"></div>
   <label class="f">Koliko jako?</label>
   <div class="chips" data-name="severity"></div>
+  <label class="f">Koliko je trajalo? (neobavezno)</label>
+  <div class="row" style="flex-wrap:wrap"><input type="number" inputmode="numeric" min="0" id="shr" aria-label="Sati" placeholder="0"> h
+  <input type="number" inputmode="numeric" min="0" max="59" id="smn" aria-label="Minute" placeholder="0"> min
+  <button type="button" class="chip" id="ongo" data-flag="1" aria-pressed="false">Još traje</button></div>
   <div class="tslot"></div>
   <label class="f" for="n1">Bilješke (neobavezno)</label>
   <textarea id="n1"></textarea>
@@ -163,9 +175,65 @@ select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--
   <div class="chips" data-name="triggers" data-multi="1"></div>
   <label class="f">Nakon napadaja (odaberite sve što vrijedi)</label>
   <div class="chips" data-name="after" data-multi="1"></div>
+  <label class="f">Je li dan hitni lijek?</label>
+  <div class="row"><button type="button" class="chip" id="resc" data-flag="1" aria-pressed="false">Da, dan je hitni lijek</button></div>
+  <div id="rbox" class="hide">
+    <label class="f" for="rname">Koji lijek i doza?</label>
+    <input type="text" id="rname" class="full" placeholder="Naziv lijeka i doza" autocomplete="off">
+    <label class="f" for="rtime">U koliko sati?</label>
+    <input type="time" id="rtime">
+  </div>
   <label class="f" for="n2">Bilješke (neobavezno)</label>
   <textarea id="n2"></textarea>
   <button class="save" data-save="seizure">Spremi napadaj</button>
+</section>
+
+<section id="checkin" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Dnevna provjera</h2>
+  <label class="f" for="cdate">Za koji dan?</label>
+  <input type="date" id="cdate">
+  <p class="sub" id="cstat" style="margin:8px 0 0"></p>
+  <label class="f" for="csleep">Koliko ste sati spavali?</label>
+  <div class="row"><input type="number" inputmode="decimal" step="0.5" min="0" max="24" id="csleep" placeholder="0"> h</div>
+  <label class="f">Raspoloženje</label>
+  <div class="chips" data-name="mood" data-fixed="1"></div>
+  <label class="f">Stres</label>
+  <div class="chips" data-name="stress" data-fixed="1"></div>
+  <label class="f">Što još? (odaberite sve što vrijedi)</label>
+  <div class="chips" data-name="extras" data-multi="1"></div>
+  <label class="f" for="cn">Bilješke (neobavezno)</label>
+  <textarea id="cn"></textarea>
+  <button class="save" id="csave">Spremi provjeru</button>
+  <div class="mini"><button id="cdel" style="background:var(--card)">Obriši provjeru za taj dan</button></div>
+</section>
+
+<section id="card" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Hitna kartica</h2>
+  <div id="cview"></div>
+  <div id="cedit" class="hide">
+    <p class="sub">Podaci ostaju samo na ovom uređaju. Upišite ono što drugi trebaju znati u hitnom slučaju.</p>
+    <label class="f" for="kname">Ime i prezime</label><input type="text" id="kname" class="full" autocomplete="off">
+    <label class="f" for="kdiag">Dijagnoza / stanje</label><input type="text" id="kdiag" class="full">
+    <label class="f" for="kmeds">Lijekovi koje uzimam</label><textarea id="kmeds"></textarea>
+    <div class="mini"><button type="button" id="kimp" style="background:var(--yel)">Uvezi iz popisa lijekova</button></div>
+    <label class="f" for="kall">Alergije</label><input type="text" id="kall" class="full">
+    <label class="f" for="kc1">Kontakt osoba (ime)</label><input type="text" id="kc1" class="full">
+    <label class="f" for="kp1">Telefon kontakt osobe</label><input type="tel" inputmode="tel" id="kp1" class="full">
+    <label class="f" for="kdoc">Liječnik (ime)</label><input type="text" id="kdoc" class="full">
+    <label class="f" for="kpd">Telefon liječnika</label><input type="tel" inputmode="tel" id="kpd" class="full">
+    <label class="f" for="knote">Dodatne upute</label><textarea id="knote"></textarea>
+    <button class="save" id="ksave">Spremi karticu</button>
+    <div class="mini"><button id="kcancel" style="background:var(--card)">Odustani</button></div>
+  </div>
+</section>
+
+<section id="today" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Današnji unosi</h2>
+  <p class="sub" id="tsub"></p>
+  <div id="tlist"></div>
 </section>
 
 <section id="meds" class="hide">
@@ -216,14 +284,17 @@ select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--
 </template>
 
 <script>
-const VER=4;
+const VER=6;
 const OPTS={
  symptoms:["Glavobolja","Trnci","Vrtoglavica","Mučnina","Aura","Déjà vu","Promjene vida","Čudan miris ili okus","Smetenost","Umor","Tjeskoba ili strah","Trzanje mišića","Drugo"],
  severity:["Blago","Umjereno","Jako"],
  kind:["Nisam siguran/na","Zagledanost / odsutnost","Konvulzivni","Jedna strana tijela","Pad","Drugo"],
  aware:["Da","Ne","Nisam siguran/na"],
  triggers:["Nedostatak sna","Stres","Propuštena terapija","Bolest","Treperavo svjetlo","Alkohol","Nepoznato"],
- after:["Pospanost","Smetenost","Glavobolja","Bolni mišići","Brz oporavak"]
+ after:["Pospanost","Smetenost","Glavobolja","Bolni mišići","Brz oporavak"],
+ mood:["Loše","Slabo","U redu","Dobro","Odlično"],
+ stress:["Nema","Blagi","Umjereni","Jaki"],
+ extras:["Alkohol","Bolest ili temperatura","Preskočen obrok","Naporan dan","Treperava svjetla","Putovanje"]
 };
 const KEY="dnevnikSimptoma.v1",CK="dnevnikSimptoma.custom";
 const rd=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||d)}catch(e){return JSON.parse(d)}};
@@ -250,6 +321,7 @@ function buildChips(c,sel=[],extra=[]){
       if(!c.dataset.multi)$$(".chip",c).forEach(x=>x!==b&&x.setAttribute("aria-pressed","false"));
       b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
     };c.append(b)});
+  if(c.dataset.fixed)return;
   const a=document.createElement("button");a.type="button";a.className="chip add";a.textContent="Dodaj +";
   a.onclick=()=>{const v=(prompt("Dodaj novu opciju:")||"").trim();if(!v)return;
     if(!all.includes(v)){const m=rd(CK,"{}");(m[n]=m[n]||[]).push(v);wr(CK,m)}
@@ -271,17 +343,20 @@ setInterval(tick,15000);tick();
 const getWhen=s=>{const o=$(".tslot",s)._o;return o.manual&&o.inp.value?new Date(o.inp.value):new Date()};
 const pick=(s,n)=>pressed($(`[data-name="${n}"]`,s));
 $$(".save").forEach(b=>b.dataset.l=b.textContent);
+$("#ongo").onclick=function(){this.setAttribute("aria-pressed",this.getAttribute("aria-pressed")==="true"?"false":"true")};
+function syncRescue(){$("#rbox").classList.toggle("hide",$("#resc").getAttribute("aria-pressed")!=="true")}
+$("#resc").onclick=function(){this.setAttribute("aria-pressed",this.getAttribute("aria-pressed")==="true"?"false":"true");syncRescue()};
 
 function reset(s){
   $$(".chips[data-name]",s).forEach(c=>buildChips(c));
-  $$("textarea,input[type=number]",s).forEach(i=>i.value="");
+  $$("textarea,input[type=number]",s).forEach(i=>i.value="");$$(".chip[data-flag]",s).forEach(b=>b.setAttribute("aria-pressed","false"));if(s.id==="seizure"){$("#rname").value="";$("#rtime").value="";syncRescue()}
   const o=$(".tslot",s)._o;o.manual=false;o.inp.classList.add("hide");o.btn.classList.remove("hide");tick();
   const sv=$(".save",s);sv.textContent=sv.dataset.l;
 }
 function show(id,keep){
   if(!keep&&editing){editing=null;reset($("#symptom"));reset($("#seizure"))}
   $$("main > section").forEach(s=>s.classList.toggle("hide",s.id!==id));
-  if(id==="history")renderList();if(id==="meds")renderMeds();if(id==="summ")renderSumm();
+  if(id==="history")renderList();if(id==="today")renderToday();if(id==="checkin"){$("#cdate").value=todayK();$("#cdate").max=todayK();loadCheckin()}if(id==="card"){cardEdit=false;renderCard()}if(id==="home")homeSub();if(id==="meds")renderMeds();if(id==="summ")renderSumm();
   window.scrollTo(0,0);
 }
 $$("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
@@ -291,11 +366,14 @@ $$("[data-save]").forEach(btn=>btn.onclick=()=>{
   const e={id:editing||Date.now(),type,when:getWhen(s).toISOString(),notes:$("textarea",s).value.trim()};
   if(type==="symptom"){
     e.symptoms=pick(s,"symptoms");e.severity=pick(s,"severity")[0]||"";
+    e.ongoing=$("#ongo").getAttribute("aria-pressed")==="true";
+    e.seconds=e.ongoing?0:(+$("#shr").value||0)*3600+(+$("#smn").value||0)*60;
     if(!e.symptoms.length){toast("Odaberite barem jedan simptom");return}
   }else{
     e.seconds=(+$("#min").value||0)*60+(+$("#sec").value||0);
     e.kind=pick(s,"kind")[0]||"";e.aware=pick(s,"aware")[0]||"";
     e.triggers=pick(s,"triggers");e.after=pick(s,"after");
+    e.rescue=$("#resc").getAttribute("aria-pressed")==="true";if(e.rescue){e.rescueName=$("#rname").value.trim();e.rescueTime=$("#rtime").value}
   }
   const i=a.findIndex(x=>x.id===e.id);i>=0?a[i]=e:a.push(e);
   store(a);const was=editing;editing=null;reset(s);toast(was?"Promjene spremljene":"Spremljeno");show(was?"history":"home");
@@ -304,15 +382,17 @@ $$("[data-save]").forEach(btn=>btn.onclick=()=>{
 function fill(s,n,vals){const v=(vals||[]).filter(Boolean);buildChips($(`[data-name="${n}"]`,s),v,v)}
 function startEdit(e){
   const s=$("#"+e.type);editing=e.id;show(e.type,true);
-  if(e.type==="symptom"){fill(s,"symptoms",e.symptoms);fill(s,"severity",[e.severity])}
+  if(e.type==="symptom"){fill(s,"symptoms",e.symptoms);fill(s,"severity",[e.severity]);
+    $("#shr").value=Math.floor((e.seconds||0)/3600)||"";$("#smn").value=Math.floor((e.seconds||0)%3600/60)||"";$("#ongo").setAttribute("aria-pressed",e.ongoing?"true":"false")}
   else{$("#min").value=Math.floor(e.seconds/60)||"";$("#sec").value=e.seconds%60||"";
-    fill(s,"kind",[e.kind]);fill(s,"aware",[e.aware]);fill(s,"triggers",e.triggers);fill(s,"after",e.after)}
+    fill(s,"kind",[e.kind]);fill(s,"aware",[e.aware]);fill(s,"triggers",e.triggers);fill(s,"after",e.after);
+    $("#resc").setAttribute("aria-pressed",e.rescue?"true":"false");$("#rname").value=e.rescueName||"";$("#rtime").value=e.rescueTime||"";syncRescue()}
   $("textarea",s).value=e.notes||"";
   setManual($(".tslot",s)._o,new Date(e.when));
   $(".save",s).textContent="Spremi promjene";
 }
 
-const dur=sec=>sec?`${Math.floor(sec/60)} min ${sec%60} s`:"trajanje nije upisano";
+const dur=sec=>{if(!sec)return"trajanje nije upisano";const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),x=sec%60;return[h?h+" h":"",m?m+" min":"",x?x+" s":""].filter(Boolean).join(" ")};
 function renderList(){
   hcal.st.sel=hf;hcal.draw();
   let a=load().sort((x,y)=>new Date(y.when)-new Date(x.when));const L=$("#list");L.innerHTML="";
@@ -321,7 +401,7 @@ function renderList(){
   if(!a.length){L.innerHTML=`<div class="empty"><svg class="ck"><use href="#ck"/></svg><p>${hf?"Nema unosa za taj dan.":"Još nema unosa. Spremljeni unosi pojavit će se ovdje."}</p></div>`;return}
   a.forEach(e=>{
     const d=document.createElement("div");d.className="entry "+e.type;
-    const t=e.type==="symptom"?(e.symptoms.join(", ")+(e.severity?" ("+e.severity.toLowerCase()+")":"")):("Napadaj · "+dur(e.seconds)+(e.kind?" · "+e.kind:""));
+    const t=e.type==="symptom"?(e.symptoms.join(", ")+(e.severity?" ("+e.severity.toLowerCase()+")":"")+(e.ongoing?" · još traje":e.seconds?" · "+dur(e.seconds):"")):("Napadaj · "+dur(e.seconds)+(e.kind?" · "+e.kind:"")+(e.rescue?" · hitni lijek"+(e.rescueName?" ("+e.rescueName+")":"")+(e.rescueTime?" u "+e.rescueTime:""):""));
     d.innerHTML=`<div class="act"><button class="ed">Uredi</button><button class="de">Obriši</button></div><b></b><span></span>`;
     $("b",d).textContent=t;$("span",d).textContent=fmt(new Date(e.when))+(e.notes?" · "+e.notes:"");
     $(".ed",d).onclick=()=>startEdit(e);
@@ -339,13 +419,14 @@ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
 function buildCsv(){
   const a=load().sort((x,y)=>new Date(x.when)-new Date(y.when)),m=meds(),md=[];
   Object.keys(m.d).sort().forEach(k=>Object.entries(m.d[k]).forEach(([n,r])=>{if(r.m)md.push([k,n,"Jutro"]);if(r.e)md.push([k,n,"Večer"])}));
-  if(!a.length&&!md.length)return null;
-  const head=["Datum","Vrijeme","Vrsta","Simptomi","Jačina","Trajanje (sekunde)","Vrsta napadaja","Gubitak svijesti","Okidači","Nakon napadaja","Bilješke","Lijek","Doza"];
+  const cI=Object.entries(cis()).sort();if(!a.length&&!md.length&&!cI.length)return null;
+  const head=["Datum","Vrijeme","Vrsta","Simptomi","Jačina","Trajanje (sekunde)","Vrsta napadaja","Gubitak svijesti","Okidači","Nakon napadaja","Bilješke","Lijek","Doza","Još traje","Hitni lijek","Hitni lijek (naziv)","Hitni lijek (sat)","San (h)","Raspoloženje","Stres","Dodatno"];
   const rows=a.map(e=>{const d=new Date(e.when);
     return [ymd(d),`${pad(d.getHours())}:${pad(d.getMinutes())}`,
-    e.type==="symptom"?"Simptom":"Napadaj",(e.symptoms||[]).join(", "),e.severity||"",e.seconds??"",e.kind||"",e.aware||"",
-    (e.triggers||[]).join(", "),(e.after||[]).join(", "),e.notes||"","",""].map(q).join(";")});
-  md.forEach(([k,n,w])=>rows.push([k,"","Lijek","","","","","","","","",n,w].map(q).join(";")));
+    e.type==="symptom"?"Simptom":"Napadaj",(e.symptoms||[]).join(", "),e.severity||"",e.seconds||"",e.kind||"",e.aware||"",
+    (e.triggers||[]).join(", "),(e.after||[]).join(", "),e.notes||"","","",e.ongoing?"Da":"",e.rescue?"Da":"",e.rescueName||"",e.rescueTime||"","","","",""].map(q).join(";")});
+  md.forEach(([k,n,w])=>rows.push([k,"","Lijek","","","","","","","","",n,w,"","","","","","","",""].map(q).join(";")));
+  cI.forEach(([k,c])=>{const r=Array(21).fill("");r[0]=k;r[2]="Dnevna provjera";r[10]=c.notes||"";r[17]=c.sleep??"";r[18]=c.mood||"";r[19]=c.stress||"";r[20]=(c.extras||[]).join(", ");rows.push(r.map(q).join(";"))});
   return "\ufeff"+[head.map(q).join(";"),...rows].join("\r\n");
 }
 const fname=()=>"dnevnik-"+local(new Date()).slice(0,10)+".csv";
@@ -358,7 +439,7 @@ $("#send").onclick=async()=>{
     else{download(fname(),t,"text/csv;charset=utf-8");toast("Dijeljenje nije podržano. Datoteka je spremljena.")}
   }catch(e){if(e.name!=="AbortError")toast("Nije moguće otvoriti izbornik za dijeljenje")}
 };
-$("#json").onclick=()=>download("dnevnik-sigurnosna-kopija.json",JSON.stringify({entries:load(),custom:rd(CK,"{}"),lijekovi:meds()},null,2),"application/json");
+$("#json").onclick=()=>download("dnevnik-sigurnosna-kopija.json",JSON.stringify({entries:load(),custom:rd(CK,"{}"),lijekovi:meds(),provjere:cis(),kartica:rd(CARDK,"{}")},null,2),"application/json");
 
 
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -427,20 +508,98 @@ function renderSumm(){
   sy.forEach(e=>per[new Date(e.when).getDate()-1].s+=(e.symptoms||[]).length);
   se.forEach(e=>per[new Date(e.when).getDate()-1].z++);
   const cnt=(arr,f)=>{const o={};arr.forEach(e=>(f(e)||[]).forEach(v=>v&&(o[v]=(o[v]||0)+1)));return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5)};
+  const ci=Object.entries(cis()).filter(([k])=>k.startsWith(pre)).map(x=>x[1]),cs=ci.filter(c=>c.sleep!=null),ciAvg=cs.length?(Math.round(cs.reduce((a,c)=>a+c.sleep,0)/cs.length*10)/10).toString().replace(".",",")+" h":"–",ciLow=cs.filter(c=>c.sleep<6).length;
+  const sdur=sy.filter(e=>e.seconds&&!e.ongoing),sAvg=sdur.length?dur(Math.round(sdur.reduce((a,e)=>a+e.seconds,0)/sdur.length)):"–",sTot=sdur.length?dur(sdur.reduce((a,e)=>a+e.seconds,0)):"–";
   const withDur=se.filter(e=>e.seconds),avg=withDur.length?dur(Math.round(withDur.reduce((a,e)=>a+e.seconds,0)/withDur.length)):"–";
   let t=0,g=0;const f=takenDays(meds())[0],last=`${pre}${pad(dim)}`,end=todayK()<last?todayK():last;
   if(f)for(let i=1;i<=dim;i++){const k=pre+pad(i);if(k>=f&&k<=end){const r=medStat(k);t+=r.t;g+=r.g}}
   const mx=Math.max(1,...per.map(p=>p.s+p.z*3));
   $("#sbody").innerHTML=`<div class="stats">
-   <div><big>${se.length}</big>napadaja</div><div><big>${avg}</big>prosječno trajanje</div>
+   <div><big>${se.length}</big>napadaja</div><div><big>${avg}</big>prosječno trajanje napadaja</div>
    <div><big>${per.reduce((a,p)=>a+p.s,0)}</big>zabilježenih simptoma</div><div><big>${per.filter(p=>p.s||p.z).length}</big>dana sa simptomima ili napadajem</div>
-   <div><big>${t?Math.round(g/t*100)+" %":"–"}</big>uzetih doza lijekova</div><div><big>${es.length}</big>unosa ukupno</div></div>
+   <div><big>${t?Math.round(g/t*100)+" %":"–"}</big>uzetih doza lijekova</div><div><big>${es.length}</big>unosa ukupno</div>
+   <div><big>${sAvg}</big>prosječno trajanje simptoma</div><div><big>${sTot}</big>ukupno trajanje simptoma</div>
+   <div><big>${se.filter(e=>e.rescue).length}</big>napadaja s hitnim lijekom</div><div><big>${ciAvg}</big>prosječno spavanje</div>
+   <div><big>${ci.length}</big>dana s dnevnom provjerom</div><div><big>${ciLow}</big>dana sa spavanjem manje od 6 h</div></div>
    <label class="f">Po danima</label>
    <div class="chart">${per.map(p=>`<div class="bar"><i class="z" style="height:${p.z*3/mx*100}%"></i><i class="s" style="height:${p.s/mx*100}%"></i></div>`).join("")}</div>
    <div class="lab">${per.map((p,i)=>`<span>${[1,5,10,15,20,25,dim].includes(i+1)?i+1:""}</span>`).join("")}</div>
    <div class="leg"><span><i style="background:var(--red)"></i>simptomi</span><span><i style="background:var(--blue)"></i>napadaji</span></div>`
    +topList("Najčešći simptomi",cnt(sy,e=>e.symptoms))+topList("Najčešći okidači",cnt(se,e=>e.triggers))+topList("Vrste napadaja",cnt(se,e=>[e.kind]));
 }
+
+// Danas: današnji unosi, naknadno dodavanje trajanja
+let tedit=null;
+const hm=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const todayList=()=>load().filter(e=>ymd(new Date(e.when))===todayK()||e.ongoing).sort((a,b)=>new Date(b.when)-new Date(a.when));
+function homeSub(){const l=todayList(),o=l.filter(e=>e.ongoing).length;
+  $("#todaysub").textContent=l.length?"Unosa danas: "+l.length+(o?" · još traje: "+o:""):"Danas još nema unosa";}
+function upd(id,fn){const a=load(),x=a.find(y=>y.id===id);if(x){fn(x);store(a)}tedit=null;renderToday()}
+function renderToday(){
+  const L=$("#tlist"),a=todayList();L.innerHTML="";
+  $("#tsub").textContent=a.length?"Dodajte trajanje naknadno ili završite simptom koji još traje.":"";
+  if(!a.length){L.innerHTML='<div class="empty"><svg class="ck"><use href="#ck"/></svg><p>Danas još nema unosa.</p></div>';return}
+  a.forEach(e=>{
+    const w=new Date(e.when),sym=e.type==="symptom",d=document.createElement("div");d.className="entry "+e.type;
+    const day=ymd(w)===todayK()?"":w.toLocaleDateString("hr-HR",{day:"numeric",month:"numeric"})+". ";
+    const dt=e.ongoing?"još traje (od "+day+hm(w)+")":e.seconds?"trajanje: "+dur(e.seconds):"trajanje nije upisano";
+    d.innerHTML='<b></b><span></span><div class="mini"></div>';
+    $("b",d).textContent=sym?e.symptoms.join(", "):"Napadaj"+(e.kind?" · "+e.kind:"")+(e.rescue?" · hitni lijek":"");
+    $("span",d).textContent=day+hm(w)+" · "+dt;
+    const M=$(".mini",d),btn=(t,bg,fn,host=M)=>{const b=document.createElement("button");b.type="button";b.textContent=t;b.style.background=bg;b.onclick=fn;host.append(b)};
+    if(e.ongoing)btn("Završilo je sada","var(--green)",()=>{upd(e.id,x=>{x.seconds=Math.max(1,Math.round((Date.now()-new Date(x.when))/1000));x.ongoing=false});toast("Trajanje spremljeno")});
+    btn(e.seconds||e.ongoing?"Promijeni trajanje":"Dodaj trajanje","var(--yel)",()=>{tedit=tedit===e.id?null:e.id;renderToday()});
+    if(tedit===e.id){
+      const v=e.seconds||0,ed=document.createElement("div");ed.className="row";ed.style.cssText="flex-wrap:wrap;margin-top:12px";
+      const inp=(c,l,val,mx)=>`<input type="number" inputmode="numeric" min="0" ${mx?'max="59"':""} class="${c}" aria-label="${l}" placeholder="0" value="${val||""}">`;
+      ed.innerHTML=inp("th","Sati",Math.floor(v/3600))+" h "+inp("tm","Minute",Math.floor(v%3600/60),1)+" min "+(sym?"":inp("ts","Sekunde",v%60,1)+" s");
+      const row=document.createElement("div");row.className="mini";row.style.width="100%";
+      btn("Spremi","var(--green)",()=>{const g=c=>+($("."+c,ed)||{}).value||0,sec=g("th")*3600+g("tm")*60+g("ts");
+        if(!sec){toast("Upišite trajanje");return}upd(e.id,x=>{x.seconds=sec;x.ongoing=false});toast("Trajanje spremljeno")},row);
+      btn("Odustani","var(--card)",()=>{tedit=null;renderToday()},row);
+      ed.append(row);d.append(ed);
+    }
+    L.append(d);
+  });
+}
+homeSub();
+
+// Dnevna provjera
+const CIK="dnevnikSimptoma.checkin",cis=()=>rd(CIK,"{}");
+function loadCheckin(){
+  const s=$("#checkin"),k=$("#cdate").value||todayK(),all=cis(),c=all[k]||{};
+  $("#csleep").value=c.sleep??"";$("#cn").value=c.notes||"";
+  fill(s,"mood",[c.mood]);fill(s,"stress",[c.stress]);fill(s,"extras",c.extras);
+  $("#cstat").textContent=all[k]?"Za ovaj dan već postoji provjera. Spremanje će je zamijeniti.":"";
+  $("#csave").textContent=all[k]?"Spremi promjene":"Spremi provjeru";
+  $("#cdel").classList.toggle("hide",!all[k]);
+}
+$("#cdate").onchange=loadCheckin;
+$("#csave").onclick=()=>{
+  const s=$("#checkin"),k=$("#cdate").value||todayK(),sl=$("#csleep").value;
+  const c={sleep:sl===""?null:+sl,mood:pick(s,"mood")[0]||"",stress:pick(s,"stress")[0]||"",extras:pick(s,"extras"),notes:$("#cn").value.trim()};
+  if(c.sleep===null&&!c.mood&&!c.stress&&!c.extras.length&&!c.notes){toast("Upišite barem jedan podatak");return}
+  const m=cis();m[k]=c;wr(CIK,m);toast("Provjera spremljena");show("home");
+};
+$("#cdel").onclick=()=>{const k=$("#cdate").value||todayK();if(!confirm("Obrisati provjeru za taj dan?"))return;
+  const m=cis();delete m[k];wr(CIK,m);toast("Obrisano");loadCheckin()};
+
+// Hitna kartica
+const CARDK="dnevnikSimptoma.card",KF=["name","diag","meds","all","c1","p1","doc","pd","note"];let cardEdit=false;
+function renderCard(){
+  const c=rd(CARDK,"{}"),has=KF.some(f=>c[f]),ed=cardEdit||!has;
+  $("#cedit").classList.toggle("hide",!ed);$("#cview").classList.toggle("hide",ed);
+  if(ed){KF.forEach(f=>$("#k"+f).value=c[f]||"");$("#kcancel").classList.toggle("hide",!has);return}
+  const row=(l,v)=>v?`<div class="k">${l}</div><div class="v">${esc(v)}</div>`:"";
+  const call=p=>p?`<div><a class="call" href="tel:${esc(p.replace(/[^+\d]/g,""))}">Nazovi ${esc(p)}</a></div>`:"";
+  $("#cview").innerHTML=`<div class="card"><h3>Hitna kartica</h3>`+row("Ime i prezime",c.name)+row("Dijagnoza / stanje",c.diag)+row("Lijekovi",c.meds)+row("Alergije",c.all)
+    +row("Kontakt osoba",c.c1)+call(c.p1)+row("Liječnik",c.doc)+call(c.pd)+row("Dodatne upute",c.note)+`</div><div class="mini"><button id="kedit" style="background:var(--yel)">Uredi karticu</button></div>`;
+  $("#kedit").onclick=()=>{cardEdit=true;renderCard()};
+}
+$("#ksave").onclick=()=>{const c={};KF.forEach(f=>c[f]=$("#k"+f).value.trim());wr(CARDK,c);cardEdit=false;renderCard();toast("Kartica spremljena")};
+$("#kcancel").onclick=()=>{cardEdit=false;renderCard()};
+$("#kimp").onclick=()=>{const l=meds().list.map(x=>x.n);if(!l.length){toast("Popis lijekova je prazan");return}
+  const t=$("#kmeds"),cur=t.value.trim(),add=l.filter(n=>!cur.includes(n));if(add.length)t.value=(cur?cur+"\n":"")+add.join("\n")};
 
 // provjera nove verzije + osvježavanje jednim dodirom
 async function chk(){try{const t=await(await fetch("index.html?c="+Date.now(),{cache:"no-store"})).text();
