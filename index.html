@@ -3,60 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dnevnik">
-<meta name="theme-color" content="#2f7f79">
+<meta name="theme-color" content="#ff7a90">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Dnevnik simptoma i napadaja</title>
 <style>
-:root{--bg:#f3f6f5;--card:#fff;--ink:#17302f;--mute:#5c7170;--line:#d5e0de;--sym:#2f7f79;--sei:#9a4a3c;--ok:#17302f}
-@media (prefers-color-scheme:dark){:root{--bg:#10191a;--card:#182526;--ink:#e6f0ee;--mute:#93aaa8;--line:#2b3f40;--sym:#5ec2ba;--sei:#e59a8a;--ok:#e6f0ee}}
+:root{color-scheme:light;--bg:#fff0f6;--card:#fff;--ink:#5a2a42;--mute:#946b81;--line:#f6cfe0;--red:#ff7a90;--blue:#6bb8ff;--green:#6fdc9b;--yel:#ffd75e}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:560px;margin:0 auto;padding:24px 18px 60px}
-h1{font-size:1.6rem;margin:8px 0 4px}h2{font-size:1.3rem;margin:4px 0 16px}
+main{max-width:560px;margin:0 auto;padding:24px 18px 70px}
+h1{font-size:1.55rem;margin:8px 0 4px;display:flex;align-items:center;gap:10px}h2{font-size:1.3rem;margin:4px 0 16px}
 p.sub{color:var(--mute);margin:0 0 24px}
-.hide{display:none}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sym);outline-offset:2px}
-.big{display:block;width:100%;text-align:left;border:0;border-radius:18px;padding:26px 22px;margin-bottom:14px;color:#fff;font-size:1.4rem;font-weight:700}
-.big small{display:block;font-weight:400;font-size:1rem;opacity:.9}
-.big.sym{background:var(--sym)}.big.sei{background:var(--sei)}
-@media (prefers-color-scheme:dark){.big{color:#0b1415}}
+.hide{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.ck{width:40px;height:40px;flex:none;transform-origin:50% 100%}
+.big{position:relative;display:block;width:100%;text-align:left;border:0;border-radius:22px;padding:26px 100px 26px 22px;margin-bottom:14px;color:var(--ink);font-size:1.4rem;font-weight:700;box-shadow:0 5px 0 rgba(90,42,66,.18);transition:transform .12s,box-shadow .12s}
+.big small{display:block;font-weight:400;font-size:1rem}
+.big .ck{position:absolute;right:18px;bottom:10px;width:64px;height:64px}
+.big:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(90,42,66,.18)}
+.big:active .ck,.big:focus-visible .ck{animation:peck .5s}
+@media (hover:hover){.big:hover .ck{animation:peck .5s}}
+@keyframes peck{0%,100%{transform:rotate(0)}35%{transform:rotate(20deg) translateY(5px)}65%{transform:rotate(-5deg)}}
+.c1{background:var(--red)}.c2{background:var(--blue)}.c3{background:var(--green)}.c4{background:var(--yel)}
 .link{background:none;border:0;color:var(--mute);text-decoration:underline;padding:10px 0;font-size:1rem}
-.back{margin-bottom:6px}
 label.f{display:block;font-weight:700;margin:22px 0 8px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:9px 16px}
-.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.add{border-style:dashed;color:var(--mute)}
+.chip .x{margin-left:8px;opacity:.6}
+.chip[aria-pressed=true]{border-color:var(--ink);font-weight:700}
+.chip:nth-child(6n+1)[aria-pressed=true]{background:#ffb3c1}.chip:nth-child(6n+2)[aria-pressed=true]{background:#ffd3a3}
+.chip:nth-child(6n+3)[aria-pressed=true]{background:#fff2a8}.chip:nth-child(6n+4)[aria-pressed=true]{background:#b9f0c9}
+.chip:nth-child(6n+5)[aria-pressed=true]{background:#b3d9ff}.chip:nth-child(6n)[aria-pressed=true]{background:#d9c5ff}
 input[type=number],input[type=datetime-local],textarea{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px}
 input[type=number]{width:90px}textarea{width:100%;min-height:80px}
 .row{display:flex;gap:10px;align-items:center}
 .when{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.save{margin-top:28px;width:100%;border:0;border-radius:14px;padding:16px;font-weight:700;font-size:1.15rem;background:var(--ok);color:var(--bg)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center;max-width:90%}
-.toast.on{opacity:1}
-.entry{background:var(--card);border-left:6px solid var(--sym);border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.entry.seizure{border-color:var(--sei)}
+.save{margin-top:28px;width:100%;border:0;border-radius:16px;padding:16px;font-weight:700;font-size:1.15rem;color:var(--ink);background:linear-gradient(90deg,#ff7a90,#ffb457,#ffe066,#6fdc9b,#6bb8ff,#b794ff);box-shadow:0 4px 0 rgba(90,42,66,.18)}
+.save:active{transform:translateY(3px);box-shadow:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 18px 8px 10px;border-radius:14px;opacity:0;pointer-events:none;transition:opacity .2s;display:flex;align-items:center;gap:8px;max-width:90%}
+.toast.on{opacity:1}.toast.on .ck{animation:hop .6s}
+.toast .ck{width:30px;height:30px}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-10px)}}
+.entry{background:var(--card);border-left:8px solid var(--red);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.entry.seizure{border-color:var(--blue)}
 .entry b{display:block}.entry span{color:var(--mute);font-size:.95rem}
-.entry button{float:right;border:0;background:none;color:var(--mute);text-decoration:underline}
+.act{float:right;display:flex;gap:12px}.act button{border:0;background:none;color:var(--mute);text-decoration:underline}
 .tools{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 20px}
-.tools button{border:2px solid var(--ink);background:none;border-radius:12px;padding:10px 16px;font-weight:700}
-.tools button.primary{background:var(--ink);color:var(--bg)}
-@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+.tools button{border:0;border-radius:14px;padding:11px 16px;font-weight:700;color:var(--ink);box-shadow:0 4px 0 rgba(90,42,66,.18)}
+.flock{display:flex;justify-content:center;align-items:flex-end;gap:14px;margin-top:26px;opacity:.9}
+.empty{text-align:center;color:var(--mute)}.empty .ck{width:90px;height:90px}
+#upd{position:fixed;top:0;left:0;right:0;z-index:9;background:var(--ink);color:#fff;padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+#upd button{border:0;border-radius:12px;background:var(--yel);color:var(--ink);font-weight:700;padding:9px 16px;white-space:nowrap}
+.c5{background:#c3a6ff}
+.big{padding:22px 100px 22px 22px}
+.big .ck{animation:sway 3s ease-in-out infinite alternate}
+.big:nth-of-type(2n) .ck{animation-delay:-1.2s}.big:nth-of-type(3n) .ck{animation-delay:-2.1s}
+h1 .ck{animation:sway 2.5s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg) translateY(-2px)}}
+.big:active .ck,.big:focus-visible .ck{animation:peck .5s}
+.field{position:relative;height:150px;margin-top:22px;border-radius:22px;overflow:hidden;background:linear-gradient(#bfe8ff 0 42%,#8fdc84 42% 100%)}
+.field::after{content:"";position:absolute;inset:auto 0 0 0;height:58%;background:repeating-linear-gradient(100deg,transparent 0 16px,rgba(255,255,255,.2) 16px 18px);pointer-events:none}
+.walker{position:absolute;bottom:6px;left:var(--a);animation:lr var(--t) ease-in-out infinite alternate;z-index:1}
+@keyframes lr{to{left:var(--b)}}
+.walker .fl{animation:fl calc(var(--t)*2) steps(1) infinite}
+@keyframes fl{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
+.walker .ck{width:var(--w);height:var(--w);animation:bob .45s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-4px) rotate(-3deg)}}
+.bfly{position:absolute;width:30px;height:30px;z-index:2}
+.bfly svg{width:100%;height:100%;animation:flap .22s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleX(.35)}}
+.b1{color:#ff8fc0;animation:fly1 17s ease-in-out infinite}.b2{color:#ffb457;animation:fly2 23s ease-in-out infinite}
+@keyframes fly1{0%,100%{left:5%;top:45%}20%{left:30%;top:8%}40%{left:55%;top:42%}60%{left:85%;top:12%}80%{left:50%;top:30%}}
+@keyframes fly2{0%,100%{left:90%;top:30%}25%{left:62%;top:6%}50%{left:25%;top:36%}75%{left:8%;top:10%}}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.calh button{border:0;background:var(--card);border-radius:12px;width:44px;height:40px;font-size:1.3rem;box-shadow:0 3px 0 rgba(90,42,66,.15)}
+.calh b{text-transform:capitalize}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calg i{font-style:normal;text-align:center;color:var(--mute);font-size:.85rem}
+.day{position:relative;aspect-ratio:1;border:2px solid transparent;border-radius:12px;background:var(--card);font-weight:700;color:var(--ink);padding:0}
+.day.g{background:#9be8b4}.day.y{background:#ffe27a}.day.o{background:#ffb36b}.day.r{background:#ff8a9b}
+.day.sel{border-color:var(--ink)}.day.today{text-decoration:underline}
+.day em{position:absolute;top:0;right:2px;font-size:.7rem;font-style:normal}
+.leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.85rem;color:var(--mute);margin:10px 0}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-1px}
+select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px;width:100%}
+.mini{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mini button{border:0;border-radius:12px;padding:10px 14px;font-weight:700;color:var(--ink);box-shadow:0 3px 0 rgba(90,42,66,.15)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.stats div{background:var(--card);border-radius:14px;padding:12px;text-align:center;color:var(--mute);font-size:.9rem}
+.stats big{display:block;font-size:1.6rem;font-weight:700;color:var(--ink)}
+.chart{display:flex;align-items:flex-end;gap:2px;height:120px;background:var(--card);border-radius:12px 12px 0 0;padding:8px 8px 0}
+.bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.bar i{display:block;border-radius:3px 3px 0 0}.bar .s{background:var(--red)}.bar .z{background:var(--blue)}
+.lab{display:flex;gap:2px;padding:2px 8px 6px;font-size:.7rem;color:var(--mute);background:var(--card);border-radius:0 0 12px 12px}
+.lab span{flex:1;text-align:center;overflow:visible;white-space:nowrap}
+.hb{display:grid;grid-template-columns:110px 1fr 24px;gap:8px;align-items:center;margin:6px 0;font-size:.9rem}
+.hb div{background:var(--line);border-radius:6px;height:12px}.hb div i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#ff7a90,#b794ff)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<main>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ck" viewBox="0 0 64 64">
+<g stroke="#5a2a42" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M26 50v8M38 50v8M21 58h10M33 58h10" fill="none" stroke="#ff9a3c"/>
+<circle cx="25" cy="17" r="4.5" fill="#ff5c7a"/><circle cx="32" cy="13" r="4.5" fill="#ff5c7a"/><circle cx="39" cy="17" r="4.5" fill="#ff5c7a"/>
+<path d="M14 32l-8-9 11 1z" fill="#fff"/><ellipse cx="32" cy="35" rx="20" ry="18" fill="#fff"/>
+<path d="M49 33l9 3-9 4z" fill="#ffb02e"/><path d="M15 36c4-7 13-7 16 0-3 8-12 9-16 0z" fill="#ffd3e2"/></g>
+<circle cx="42" cy="29" r="2.4" fill="#5a2a42"/><circle cx="44" cy="38" r="3.5" fill="#ffb3c9"/></symbol><symbol id="bf" viewBox="0 0 32 32"><g fill="currentColor" stroke="#5a2a42" stroke-width="1.5" stroke-linejoin="round"><path d="M16 16C10 4 2 6 3 13c1 5 7 5 13 3z"/><path d="M16 16C22 4 30 6 29 13c-1 5-7 5-13 3z"/><path d="M16 16C10 28 4 27 6 21c2-4 7-4 10-5z"/><path d="M16 16c6 12 12 11 10 5-2-4-7-4-10-5z"/></g><rect x="15" y="8" width="2" height="17" rx="1" fill="#5a2a42"/></symbol></svg>
 
+<div id="upd" class="hide"><span>Dostupna je nova verzija aplikacije.</span><button id="updbtn">Osvježi sada</button></div>
+
+<main>
 <section id="home">
-  <h1>Dnevnik simptoma i napadaja</h1>
+  <h1><svg class="ck"><use href="#ck"/></svg>Dnevnik simptoma i napadaja</h1>
   <p class="sub">Što želite zabilježiti?</p>
-  <button class="big sym" data-go="symptom">Simptom<small>Glavobolja, trnci, aura…</small></button>
-  <button class="big sei" data-go="seizure">Napadaj<small>Trajanje, vrsta, okidači</small></button>
-  <button class="link" data-go="history">Pregled unosa i izvoz</button>
+  <button class="big c1" data-go="symptom">Simptom<small>Glavobolja, trnci, aura…</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c2" data-go="seizure">Napadaj<small>Trajanje, vrsta, okidači</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c3" data-go="meds">Lijekovi<small>Jutarnja i večernja doza</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c5" data-go="summ">Mjesečni sažetak<small>Pregled za liječnika</small><svg class="ck"><use href="#ck"/></svg></button>
+  <button class="big c4" data-go="history">Povijest i izvoz<small>Kalendar, uređivanje, slanje</small><svg class="ck"><use href="#ck"/></svg></button>
+  <div class="field" aria-hidden="true">
+    <div class="walker" style="--a:2%;--b:72%;--t:9s;--w:52px"><div class="fl"><svg class="ck"><use href="#ck"/></svg></div></div>
+    <div class="walker" style="--a:20%;--b:78%;--t:13s;--w:64px"><div class="fl"><svg class="ck"><use href="#ck"/></svg></div></div>
+    <div class="walker" style="--a:55%;--b:85%;--t:7s;--w:44px"><div class="fl"><svg class="ck"><use href="#ck"/></svg></div></div>
+    <div class="bfly b1"><svg><use href="#bf"/></svg></div><div class="bfly b2"><svg><use href="#bf"/></svg></div>
+  </div>
 </section>
 
 <section id="symptom" class="hide">
@@ -68,7 +144,7 @@ input[type=number]{width:90px}textarea{width:100%;min-height:80px}
   <div class="chips" data-name="severity"></div>
   <div class="tslot"></div>
   <label class="f" for="n1">Bilješke (neobavezno)</label>
-  <textarea id="n1" data-name="notes"></textarea>
+  <textarea id="n1"></textarea>
   <button class="save" data-save="symptom">Spremi simptom</button>
 </section>
 
@@ -88,24 +164,50 @@ input[type=number]{width:90px}textarea{width:100%;min-height:80px}
   <label class="f">Nakon napadaja (odaberite sve što vrijedi)</label>
   <div class="chips" data-name="after" data-multi="1"></div>
   <label class="f" for="n2">Bilješke (neobavezno)</label>
-  <textarea id="n2" data-name="notes"></textarea>
+  <textarea id="n2"></textarea>
   <button class="save" data-save="seizure">Spremi napadaj</button>
+</section>
+
+<section id="meds" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Lijekovi</h2>
+  <div id="mcal"></div>
+  <div class="leg"><span><i style="background:#9be8b4"></i>sve uzeto</span><span><i style="background:#ffe27a"></i>nešto nije uzeto</span><span><i style="background:#ff8a9b"></i>ništa nije uzeto</span></div>
+  <label class="f">Odabrani dan: <span id="mday"></span></label>
+  <p id="mnone" class="sub">Još nema lijekova. Dodajte prvi.</p>
+  <div id="mhas">
+    <select id="msel" aria-label="Lijek"></select>
+    <div class="chips" style="margin-top:12px"><button class="chip" id="bm" type="button" aria-pressed="false">Jutro</button><button class="chip" id="be" type="button" aria-pressed="false">Večer</button></div>
+    <label class="f">Svi lijekovi za ovaj dan</label>
+    <div class="mini"><button id="ball" style="background:var(--green)">Cijeli dan uzeto</button><button id="ballm" style="background:var(--yel)">Jutro uzeto</button><button id="balle" style="background:var(--blue)">Večer uzeto</button><button id="bclr" style="background:var(--card)">Očisti dan</button></div>
+  </div>
+  <div class="mini"><button id="madd" style="background:#c3a6ff">Dodaj lijek +</button><button id="mdel" style="background:var(--card)">Ukloni lijek</button></div>
+  <label class="f">Pregled dana</label><div id="mlist"></div>
+</section>
+
+<section id="summ" class="hide">
+  <button class="link back" data-go="home">‹ Natrag</button>
+  <h2>Mjesečni sažetak</h2>
+  <div class="calh"><button id="sprev" aria-label="Prethodni mjesec">‹</button><b id="smon"></b><button id="snext" aria-label="Sljedeći mjesec">›</button></div>
+  <div id="sbody"></div>
 </section>
 
 <section id="history" class="hide">
   <button class="link back" data-go="home">‹ Natrag</button>
   <h2>Povijest unosa</h2>
+  <div id="hcal"></div>
+  <div class="leg"><span><i style="background:#9be8b4"></i>nema simptoma</span><span><i style="background:#ffe27a"></i>1</span><span><i style="background:#ffb36b"></i>2–3</span><span><i style="background:#ff8a9b"></i>više od 3</span><span>⚡ napadaj</span></div>
+  <p class="sub" id="hnote" style="margin:0 0 12px"></p>
   <div class="tools">
-    <button id="send" class="primary">Pošalji datoteku…</button>
-    <button id="csv">Spremi na uređaj</button>
-    <button id="json">Sigurnosna kopija</button>
+    <button id="send" style="background:var(--green)">Pošalji datoteku…</button>
+    <button id="csv" style="background:var(--blue)">Spremi na uređaj</button>
+    <button id="json" style="background:var(--yel)">Sigurnosna kopija</button>
   </div>
   <p class="sub" style="font-size:.95rem">„Pošalji datoteku” otvara izbornik za dijeljenje: WhatsApp, Gmail, Poruke i drugo. Datoteka je tablica (.csv) koja se otvara u Excelu na računalu i na mobitelu.</p>
   <div id="list"></div>
 </section>
-
 </main>
-<div class="toast" id="toast" role="status"></div>
+<div class="toast" id="toast" role="status"><svg class="ck"><use href="#ck"/></svg><span></span></div>
 
 <template id="tpl">
   <label class="f">Kada</label>
@@ -114,6 +216,7 @@ input[type=number]{width:90px}textarea{width:100%;min-height:80px}
 </template>
 
 <script>
+const VER=3;
 const OPTS={
  symptoms:["Glavobolja","Trnci","Vrtoglavica","Mučnina","Aura","Déjà vu","Promjene vida","Čudan miris ili okus","Smetenost","Umor","Tjeskoba ili strah","Trzanje mišića","Drugo"],
  severity:["Blago","Umjereno","Jako"],
@@ -122,51 +225,70 @@ const OPTS={
  triggers:["Nedostatak sna","Stres","Propuštena terapija","Bolest","Treperavo svjetlo","Alkohol","Nepoznato"],
  after:["Pospanost","Smetenost","Glavobolja","Bolni mišići","Brz oporavak"]
 };
-const KEY="dnevnikSimptoma.v1";
-const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return[]}};
-const store=a=>{try{localStorage.setItem(KEY,JSON.stringify(a))}catch(e){toast("Spremanje u pregledniku nije uspjelo")}};
+const KEY="dnevnikSimptoma.v1",CK="dnevnikSimptoma.custom";
+const rd=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||d)}catch(e){return JSON.parse(d)}};
+const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast("Spremanje u pregledniku nije uspjelo")}};
+const load=()=>rd(KEY,"[]"),store=a=>wr(KEY,a);
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const pad=n=>String(n).padStart(2,"0");
 const local=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 const fmt=d=>d.toLocaleString("hr-HR",{weekday:"short",day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
-function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)}
+function toast(t){const e=$("#toast");$("span",e).textContent=t;e.classList.remove("on");void e.offsetWidth;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+document.addEventListener("touchstart",()=>{},{passive:true});
 
-$$(".chips").forEach(c=>{OPTS[c.dataset.name].forEach(o=>{
-  const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=o;b.setAttribute("aria-pressed","false");
-  b.onclick=()=>{
-    if(!c.dataset.multi)$$(".chip",c).forEach(x=>x!==b&&x.setAttribute("aria-pressed","false"));
-    b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
-  };c.append(b)})});
+const pressed=c=>$$(".chip[aria-pressed=true]",c).map(b=>b.dataset.v);
+function buildChips(c,sel=[],extra=[]){
+  const n=c.dataset.name,cu=rd(CK,"{}")[n]||[],all=[...OPTS[n],...cu];
+  extra.forEach(x=>{if(x&&!all.includes(x))all.push(x)});c.innerHTML="";
+  all.forEach(o=>{
+    const b=document.createElement("button");b.type="button";b.className="chip";b.dataset.v=o;b.textContent=o;
+    b.setAttribute("aria-pressed",sel.includes(o)?"true":"false");
+    if(cu.includes(o)){const x=document.createElement("span");x.className="x";x.textContent="×";b.append(x)}
+    b.onclick=ev=>{
+      if(ev.target.classList.contains("x")){
+        if(confirm("Ukloniti opciju „"+o+"”?")){const m=rd(CK,"{}");m[n]=m[n].filter(v=>v!==o);wr(CK,m);buildChips(c,pressed(c).filter(v=>v!==o))}return}
+      if(!c.dataset.multi)$$(".chip",c).forEach(x=>x!==b&&x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");
+    };c.append(b)});
+  const a=document.createElement("button");a.type="button";a.className="chip add";a.textContent="Dodaj +";
+  a.onclick=()=>{const v=(prompt("Dodaj novu opciju:")||"").trim();if(!v)return;
+    if(!all.includes(v)){const m=rd(CK,"{}");(m[n]=m[n]||[]).push(v);wr(CK,m)}
+    buildChips(c,c.dataset.multi?[...pressed(c),v]:[v])};
+  c.append(a);
+}
+$$(".chips").forEach(c=>buildChips(c));
 
-let clocks=[];
+let clocks=[],editing=null;
 $$(".tslot").forEach(s=>{
   s.append($("#tpl").content.cloneNode(true));
   const o={txt:$(".wtxt",s),btn:$(".wbtn",s),inp:$(".winp",s),manual:false};
-  o.btn.onclick=()=>{o.manual=true;o.inp.value=local(new Date());o.inp.classList.remove("hide");o.btn.classList.add("hide");o.txt.textContent="Postavi vrijeme:"};
+  o.btn.onclick=()=>setManual(o,new Date());
   s._o=o;clocks.push(o);
 });
+function setManual(o,d){o.manual=true;o.inp.value=local(d);o.inp.classList.remove("hide");o.btn.classList.add("hide");o.txt.textContent="Postavi vrijeme:"}
 function tick(){clocks.forEach(o=>{if(!o.manual)o.txt.textContent="Sada · "+fmt(new Date())})}
 setInterval(tick,15000);tick();
-
 const getWhen=s=>{const o=$(".tslot",s)._o;return o.manual&&o.inp.value?new Date(o.inp.value):new Date()};
-const pick=(s,n)=>$$(`[data-name="${n}"] .chip[aria-pressed=true]`,s).map(b=>b.textContent);
+const pick=(s,n)=>pressed($(`[data-name="${n}"]`,s));
+$$(".save").forEach(b=>b.dataset.l=b.textContent);
 
-function show(id){
+function reset(s){
+  $$(".chips",s).forEach(c=>buildChips(c));
+  $$("textarea,input[type=number]",s).forEach(i=>i.value="");
+  const o=$(".tslot",s)._o;o.manual=false;o.inp.classList.add("hide");o.btn.classList.remove("hide");tick();
+  const sv=$(".save",s);sv.textContent=sv.dataset.l;
+}
+function show(id,keep){
+  if(!keep&&editing){editing=null;reset($("#symptom"));reset($("#seizure"))}
   $$("main > section").forEach(s=>s.classList.toggle("hide",s.id!==id));
-  if(id==="history")renderList();
+  if(id==="history")renderList();if(id==="meds")renderMeds();if(id==="summ")renderSumm();
   window.scrollTo(0,0);
 }
 $$("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
 
-function reset(s){
-  $$(".chip",s).forEach(b=>b.setAttribute("aria-pressed","false"));
-  $$("textarea,input[type=number]",s).forEach(i=>i.value="");
-  const o=$(".tslot",s)._o;o.manual=false;o.inp.classList.add("hide");o.btn.classList.remove("hide");tick();
-}
-
 $$("[data-save]").forEach(btn=>btn.onclick=()=>{
   const type=btn.dataset.save,s=$("#"+type),a=load();
-  const e={id:Date.now(),type,when:getWhen(s).toISOString(),notes:$("textarea",s).value.trim()};
+  const e={id:editing||Date.now(),type,when:getWhen(s).toISOString(),notes:$("textarea",s).value.trim()};
   if(type==="symptom"){
     e.symptoms=pick(s,"symptoms");e.severity=pick(s,"severity")[0]||"";
     if(!e.symptoms.length){toast("Odaberite barem jedan simptom");return}
@@ -175,19 +297,35 @@ $$("[data-save]").forEach(btn=>btn.onclick=()=>{
     e.kind=pick(s,"kind")[0]||"";e.aware=pick(s,"aware")[0]||"";
     e.triggers=pick(s,"triggers");e.after=pick(s,"after");
   }
-  a.push(e);store(a);reset(s);toast("Spremljeno");show("home");
+  const i=a.findIndex(x=>x.id===e.id);i>=0?a[i]=e:a.push(e);
+  store(a);const was=editing;editing=null;reset(s);toast(was?"Promjene spremljene":"Spremljeno");show(was?"history":"home");
 });
+
+function fill(s,n,vals){const v=(vals||[]).filter(Boolean);buildChips($(`[data-name="${n}"]`,s),v,v)}
+function startEdit(e){
+  const s=$("#"+e.type);editing=e.id;show(e.type,true);
+  if(e.type==="symptom"){fill(s,"symptoms",e.symptoms);fill(s,"severity",[e.severity])}
+  else{$("#min").value=Math.floor(e.seconds/60)||"";$("#sec").value=e.seconds%60||"";
+    fill(s,"kind",[e.kind]);fill(s,"aware",[e.aware]);fill(s,"triggers",e.triggers);fill(s,"after",e.after)}
+  $("textarea",s).value=e.notes||"";
+  setManual($(".tslot",s)._o,new Date(e.when));
+  $(".save",s).textContent="Spremi promjene";
+}
 
 const dur=sec=>sec?`${Math.floor(sec/60)} min ${sec%60} s`:"trajanje nije upisano";
 function renderList(){
-  const a=load().sort((x,y)=>new Date(y.when)-new Date(x.when)),L=$("#list");L.innerHTML="";
-  if(!a.length){L.innerHTML='<p class="sub">Još nema unosa. Spremljeni unosi pojavit će se ovdje.</p>';return}
+  hcal.st.sel=hf;hcal.draw();
+  let a=load().sort((x,y)=>new Date(y.when)-new Date(x.when));const L=$("#list");L.innerHTML="";
+  if(hf)a=a.filter(e=>ymd(new Date(e.when))===hf);
+  $("#hnote").textContent=hf?"Prikazani su unosi za "+new Date(hf+"T12:00").toLocaleDateString("hr-HR",{day:"numeric",month:"long"})+". Dodirnite dan ponovno za sve unose.":"";
+  if(!a.length){L.innerHTML=`<div class="empty"><svg class="ck"><use href="#ck"/></svg><p>${hf?"Nema unosa za taj dan.":"Još nema unosa. Spremljeni unosi pojavit će se ovdje."}</p></div>`;return}
   a.forEach(e=>{
     const d=document.createElement("div");d.className="entry "+e.type;
     const t=e.type==="symptom"?(e.symptoms.join(", ")+(e.severity?" ("+e.severity.toLowerCase()+")":"")):("Napadaj · "+dur(e.seconds)+(e.kind?" · "+e.kind:""));
-    d.innerHTML=`<button>Obriši</button><b></b><span></span>`;
+    d.innerHTML=`<div class="act"><button class="ed">Uredi</button><button class="de">Obriši</button></div><b></b><span></span>`;
     $("b",d).textContent=t;$("span",d).textContent=fmt(new Date(e.when))+(e.notes?" · "+e.notes:"");
-    $("button",d).onclick=()=>{if(confirm("Obrisati ovaj unos?")){store(load().filter(x=>x.id!==e.id));renderList()}};
+    $(".ed",d).onclick=()=>startEdit(e);
+    $(".de",d).onclick=()=>{if(confirm("Obrisati ovaj unos?")){store(load().filter(x=>x.id!==e.id));renderList()}};
     L.append(d);
   });
 }
@@ -197,34 +335,121 @@ function download(name,text,mime){
   const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(u),1000);
 }
-// Točka-zarez kao razdjelnik: tako Excel s hrvatskim postavkama ispravno otvara stupce
 const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
 function buildCsv(){
-  const a=load().sort((x,y)=>new Date(x.when)-new Date(y.when));
-  if(!a.length)return null;
-  const head=["Datum","Vrijeme","Vrsta","Simptomi","Jačina","Trajanje (sekunde)","Vrsta napadaja","Gubitak svijesti","Okidači","Nakon napadaja","Bilješke"];
+  const a=load().sort((x,y)=>new Date(x.when)-new Date(y.when)),m=meds(),md=[];
+  Object.keys(m.d).sort().forEach(k=>Object.entries(m.d[k]).forEach(([n,r])=>{if(r.m)md.push([k,n,"Jutro"]);if(r.e)md.push([k,n,"Večer"])}));
+  if(!a.length&&!md.length)return null;
+  const head=["Datum","Vrijeme","Vrsta","Simptomi","Jačina","Trajanje (sekunde)","Vrsta napadaja","Gubitak svijesti","Okidači","Nakon napadaja","Bilješke","Lijek","Doza"];
   const rows=a.map(e=>{const d=new Date(e.when);
-    return [`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,`${pad(d.getHours())}:${pad(d.getMinutes())}`,
+    return [ymd(d),`${pad(d.getHours())}:${pad(d.getMinutes())}`,
     e.type==="symptom"?"Simptom":"Napadaj",(e.symptoms||[]).join(", "),e.severity||"",e.seconds??"",e.kind||"",e.aware||"",
-    (e.triggers||[]).join(", "),(e.after||[]).join(", "),e.notes||""].map(q).join(";")});
+    (e.triggers||[]).join(", "),(e.after||[]).join(", "),e.notes||"","",""].map(q).join(";")});
+  md.forEach(([k,n,w])=>rows.push([k,"","Lijek","","","","","","","","",n,w].map(q).join(";")));
   return "\ufeff"+[head.map(q).join(";"),...rows].join("\r\n");
 }
 const fname=()=>"dnevnik-"+local(new Date()).slice(0,10)+".csv";
-$("#csv").onclick=()=>{
-  const t=buildCsv();if(!t){toast("Nema unosa za izvoz");return}
-  download(fname(),t,"text/csv;charset=utf-8");
-};
+$("#csv").onclick=()=>{const t=buildCsv();if(!t){toast("Nema unosa za izvoz");return}download(fname(),t,"text/csv;charset=utf-8")};
 $("#send").onclick=async()=>{
   const t=buildCsv();if(!t){toast("Nema unosa za slanje");return}
   const file=new File([t],fname(),{type:"text/csv"});
   try{
-    if(navigator.canShare&&navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:"Dnevnik simptoma i napadaja"});
-    }else{download(fname(),t,"text/csv;charset=utf-8");toast("Dijeljenje nije podržano. Datoteka je spremljena.")}
+    if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Dnevnik simptoma i napadaja"});
+    else{download(fname(),t,"text/csv;charset=utf-8");toast("Dijeljenje nije podržano. Datoteka je spremljena.")}
   }catch(e){if(e.name!=="AbortError")toast("Nije moguće otvoriti izbornik za dijeljenje")}
 };
-$("#json").onclick=()=>download("dnevnik-sigurnosna-kopija.json",JSON.stringify(load(),null,2),"application/json");
+$("#json").onclick=()=>download("dnevnik-sigurnosna-kopija.json",JSON.stringify({entries:load(),custom:rd(CK,"{}"),lijekovi:meds()},null,2),"application/json");
 
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayK=()=>ymd(new Date());
+const MK="dnevnikSimptoma.meds";
+const meds=()=>{const m=rd(MK,"{}");m.list=m.list||[];m.d=m.d||{};return m};
+const takenDays=m=>Object.keys(m.d).filter(k=>Object.values(m.d[k]).some(r=>r.m||r.e)).sort();
+function medStat(k){const m=meds(),d=m.d[k]||{},act=m.list.filter(x=>x.f<=k);let g=0;act.forEach(x=>{const r=d[x.n]||{};g+=(r.m?1:0)+(r.e?1:0)});return{t:act.length*2,g}}
+function medColor(k){const f=takenDays(meds())[0];if(!f||k<f||k>todayK())return{};const{t,g}=medStat(k);return t?{c:g===t?"g":g===0?"r":"y"}:{}}
+function symColor(k){const A=load(),ks=A.map(e=>ymd(new Date(e.when))).sort();let n=0,z=0;
+  A.forEach(e=>{if(ymd(new Date(e.when))!==k)return;if(e.type==="symptom")n+=(e.symptoms||[]).length;else{n++;z++}});
+  const s=z?"<em>⚡</em>":"";if(!ks.length||k<ks[0]||k>todayK())return{s};return{c:n===0?"g":n===1?"y":n<=3?"o":"r",s}}
+
+function mkCal(host,fn,pick){
+  const N=new Date(),st={m:new Date(N.getFullYear(),N.getMonth(),1),sel:null};
+  const draw=()=>{
+    const y=st.m.getFullYear(),mo=st.m.getMonth(),first=(new Date(y,mo,1).getDay()+6)%7,days=new Date(y,mo+1,0).getDate();
+    let h=`<div class="calh"><button data-d="-1" aria-label="Prethodni mjesec">‹</button><b>${st.m.toLocaleDateString("hr-HR",{month:"long",year:"numeric"})}</b><button data-d="1" aria-label="Sljedeći mjesec">›</button></div><div class="calg">`+["Po","Ut","Sr","Če","Pe","Su","Ne"].map(x=>`<i>${x}</i>`).join("")+"<u></u>".repeat(first);
+    for(let i=1;i<=days;i++){const k=`${y}-${pad(mo+1)}-${pad(i)}`,c=fn(k);
+      h+=`<button class="day ${c.c||""}${k===st.sel?" sel":""}${k===todayK()?" today":""}" data-k="${k}">${i}${c.s||""}</button>`}
+    host.innerHTML=h+"</div>";
+    $$("[data-d]",host).forEach(b=>b.onclick=()=>{st.m=new Date(st.m.getFullYear(),st.m.getMonth()+ +b.dataset.d,1);draw()});
+    $$(".day",host).forEach(b=>b.onclick=()=>{st.sel=pick(b.dataset.k);draw()});
+  };
+  draw();return{st,draw};
+}
+let hf=null,mday=todayK(),sm=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+const hcal=mkCal($("#hcal"),symColor,k=>{hf=hf===k?null:k;renderList();return hf});
+const mcal=mkCal($("#mcal"),medColor,k=>{mday=k;renderMeds();return k});
+
+function renderMeds(){
+  const m=meds(),sel=$("#msel"),cur=sel.value;mcal.st.sel=mday;mcal.draw();
+  $("#mday").textContent=new Date(mday+"T12:00").toLocaleDateString("hr-HR",{weekday:"long",day:"numeric",month:"long"});
+  sel.innerHTML=m.list.map(x=>`<option>${esc(x.n)}</option>`).join("");
+  if(m.list.some(x=>x.n===cur))sel.value=cur;
+  $("#mhas").classList.toggle("hide",!m.list.length);$("#mnone").classList.toggle("hide",!!m.list.length);
+  const r=(m.d[mday]||{})[sel.value]||{};
+  $("#bm").setAttribute("aria-pressed",r.m?"true":"false");$("#be").setAttribute("aria-pressed",r.e?"true":"false");
+  $("#mlist").innerHTML=m.list.filter(x=>x.f<=mday).map(x=>{const q=(m.d[mday]||{})[x.n]||{};
+    return `<div class="entry" style="border-color:var(--green)"><b>${esc(x.n)}</b><span>Jutro: ${q.m?"✓ uzeto":"✗ nije"} · Večer: ${q.e?"✓ uzeto":"✗ nije"}</span></div>`}).join("");
+}
+function setDose(names,w,v){const m=meds(),d=m.d[mday]=m.d[mday]||{};names.forEach(n=>{const r=d[n]=d[n]||{};if(w==="a"){r.m=v;r.e=v}else r[w]=v});wr(MK,m)}
+const actNames=()=>meds().list.filter(x=>x.f<=mday).map(x=>x.n);
+$("#msel").onchange=renderMeds;
+[["m","#bm"],["e","#be"]].forEach(([w,id])=>$(id).onclick=()=>{const n=$("#msel").value;if(!n)return;
+  const r=(meds().d[mday]||{})[n]||{};setDose([n],w,r[w]?0:1);renderMeds();if(!r[w])toast("Zabilježeno")});
+$("#ball").onclick=()=>{setDose(actNames(),"a",1);renderMeds();toast("Sve uzeto za taj dan")};
+$("#ballm").onclick=()=>{setDose(actNames(),"m",1);renderMeds()};
+$("#balle").onclick=()=>{setDose(actNames(),"e",1);renderMeds()};
+$("#bclr").onclick=()=>{if(confirm("Očistiti sve zapise lijekova za taj dan?")){setDose(actNames(),"a",0);renderMeds()}};
+$("#madd").onclick=()=>{const v=(prompt("Naziv lijeka:")||"").trim();if(!v)return;const m=meds();
+  if(!m.list.some(x=>x.n===v))m.list.push({n:v,f:mday<todayK()?mday:todayK()});wr(MK,m);renderMeds();$("#msel").value=v;renderMeds()};
+$("#mdel").onclick=()=>{const n=$("#msel").value;if(!n||!confirm("Ukloniti lijek „"+n+"”? Već zabilježene doze ostaju u izvozu."))return;
+  const m=meds();m.list=m.list.filter(x=>x.n!==n);wr(MK,m);renderMeds()};
+
+$("#sprev").onclick=()=>{sm=new Date(sm.getFullYear(),sm.getMonth()-1,1);renderSumm()};
+$("#snext").onclick=()=>{sm=new Date(sm.getFullYear(),sm.getMonth()+1,1);renderSumm()};
+function topList(title,arr){if(!arr.length)return"";const mx=arr[0][1];
+  return `<label class="f">${title}</label>`+arr.map(([n,v])=>`<div class="hb"><span>${esc(n)}</span><div><i style="width:${v/mx*100}%"></i></div><b>${v}</b></div>`).join("")}
+function renderSumm(){
+  const y=sm.getFullYear(),mo=sm.getMonth(),dim=new Date(y,mo+1,0).getDate(),pre=`${y}-${pad(mo+1)}-`;
+  $("#smon").textContent=sm.toLocaleDateString("hr-HR",{month:"long",year:"numeric"});
+  const es=load().filter(e=>ymd(new Date(e.when)).startsWith(pre)),sy=es.filter(e=>e.type==="symptom"),se=es.filter(e=>e.type==="seizure");
+  const per=Array.from({length:dim},()=>({s:0,z:0}));
+  sy.forEach(e=>per[new Date(e.when).getDate()-1].s+=(e.symptoms||[]).length);
+  se.forEach(e=>per[new Date(e.when).getDate()-1].z++);
+  const cnt=(arr,f)=>{const o={};arr.forEach(e=>(f(e)||[]).forEach(v=>v&&(o[v]=(o[v]||0)+1)));return Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,5)};
+  const withDur=se.filter(e=>e.seconds),avg=withDur.length?dur(Math.round(withDur.reduce((a,e)=>a+e.seconds,0)/withDur.length)):"–";
+  let t=0,g=0;const f=takenDays(meds())[0],last=`${pre}${pad(dim)}`,end=todayK()<last?todayK():last;
+  if(f)for(let i=1;i<=dim;i++){const k=pre+pad(i);if(k>=f&&k<=end){const r=medStat(k);t+=r.t;g+=r.g}}
+  const mx=Math.max(1,...per.map(p=>p.s+p.z*3));
+  $("#sbody").innerHTML=`<div class="stats">
+   <div><big>${se.length}</big>napadaja</div><div><big>${avg}</big>prosječno trajanje</div>
+   <div><big>${per.reduce((a,p)=>a+p.s,0)}</big>zabilježenih simptoma</div><div><big>${per.filter(p=>p.s||p.z).length}</big>dana sa simptomima ili napadajem</div>
+   <div><big>${t?Math.round(g/t*100)+" %":"–"}</big>uzetih doza lijekova</div><div><big>${es.length}</big>unosa ukupno</div></div>
+   <label class="f">Po danima</label>
+   <div class="chart">${per.map(p=>`<div class="bar"><i class="z" style="height:${p.z*3/mx*100}%"></i><i class="s" style="height:${p.s/mx*100}%"></i></div>`).join("")}</div>
+   <div class="lab">${per.map((p,i)=>`<span>${[1,5,10,15,20,25,dim].includes(i+1)?i+1:""}</span>`).join("")}</div>
+   <div class="leg"><span><i style="background:var(--red)"></i>simptomi</span><span><i style="background:var(--blue)"></i>napadaji</span></div>`
+   +topList("Najčešći simptomi",cnt(sy,e=>e.symptoms))+topList("Najčešći okidači",cnt(se,e=>e.triggers))+topList("Vrste napadaja",cnt(se,e=>[e.kind]));
+}
+
+// provjera nove verzije + osvježavanje jednim dodirom
+async function chk(){try{const t=await(await fetch("index.html?c="+Date.now(),{cache:"no-store"})).text();
+  const m=t.match(/name="app-version" content="(\d+)"/);if(m&&+m[1]>VER)$("#upd").classList.remove("hide")}catch(e){}}
+$("#updbtn").onclick=async()=>{
+  try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k)}catch(e){}
+  location.replace(location.pathname+"?u="+Date.now());
+};
+chk();document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk()});
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 </body>
