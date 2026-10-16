@@ -1,0 +1,27 @@
+/* kokoši, tablete, križ */
+.k-b{animation:kbob 2.4s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.k-h{transform-box:view-box;transform-origin:40px 33px;animation:kpeck 4.4s ease-in-out infinite;animation-delay:var(--d,0s)}
+.k-t{transform-box:view-box;transform-origin:16px 36px;animation:kwag 1.7s ease-in-out infinite alternate;animation-delay:var(--d,0s)}
+.k-e{transform-box:fill-box;transform-origin:center;animation:kblink 4.6s infinite;animation-delay:var(--d,0s)}
+@keyframes kbob{to{transform:translateY(-1.6px)}}
+@keyframes kpeck{0%,68%,100%{transform:rotate(0)}74%{transform:rotate(15deg)}80%{transform:rotate(0)}86%{transform:rotate(13deg)}92%{transform:rotate(0)}}
+@keyframes kwag{to{transform:rotate(-7deg)}}
+@keyframes kblink{0%,91%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.pl{transform-box:fill-box;transform-origin:center;animation:pfloat 2.8s ease-in-out infinite alternate}
+.p2{animation-delay:-1s}.p3{animation-delay:-2s}
+@keyframes pfloat{from{transform:translateY(-2px) rotate(-6deg)}to{transform:translateY(3px) rotate(6deg)}}
+.cr{transform-box:fill-box;transform-origin:center;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.12)}28%{transform:scale(1)}42%{transform:scale(1.07)}56%{transform:scale(1)}}
+.ecg{stroke-dasharray:100;stroke-dashoffset:0;animation:ecg 2.2s linear infinite}
+@keyframes ecg{from{stroke-dashoffset:100}55%,100%{stroke-dashoffset:0}}
+/* nove ikone */
+.fsh{animation:fsh 2.6s ease-in-out infinite alternate}
+@keyframes fsh{to{transform:translateX(-5px)}}
+.far{animation:far 1.4s ease-in-out infinite}
+@keyframes far{0%,100%{transform:translateY(-1px);opacity:.35}50%{transform:translateY(3px);opacity:1}}
+.cd{transform-box:fill-box;transform-origin:center;animation:cdp 1.8s ease-in-out infinite}
+@keyframes cdp{50%{transform:scale(1.5)}}
+.zz{opacity:0;animation:zz 2.7s ease-in infinite;animation-delay:var(--zd,0s)}
+@keyframes zz{0%{opacity:0;transform:translate(-2px,5px)}25%{opacity:1}100%{opacity:0;transform:translate(4px,-6px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){.zz{opacity:1}}
