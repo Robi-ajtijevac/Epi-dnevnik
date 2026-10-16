@@ -88,7 +88,7 @@ h1 .ck{animation:sway 2.5s ease-in-out infinite alternate}
 .day{position:relative;aspect-ratio:1;border:2px solid transparent;border-radius:12px;background:var(--card);font-weight:700;color:var(--ink);padding:0}
 .day.g{background:#9be8b4}.day.y{background:#ffe27a}.day.o{background:#ffb36b}.day.r{background:#ff8a9b}
 .day.sel{border-color:var(--ink)}.day.today{text-decoration:underline}
-.day em{position:absolute;top:0;right:2px;font-size:.7rem;font-style:normal}
+.day em{position:absolute;top:1px;right:3px;font-size:.85rem;line-height:1;font-style:normal}
 .leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.85rem;color:var(--mute);margin:10px 0}
 .leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-1px}
 select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px;width:100%}
@@ -256,7 +256,7 @@ function buildChips(c,sel=[],extra=[]){
     buildChips(c,c.dataset.multi?[...pressed(c),v]:[v])};
   c.append(a);
 }
-$$(".chips").forEach(c=>buildChips(c));
+$$(".chips[data-name]").forEach(c=>buildChips(c));
 
 let clocks=[],editing=null;
 $$(".tslot").forEach(s=>{
@@ -273,7 +273,7 @@ const pick=(s,n)=>pressed($(`[data-name="${n}"]`,s));
 $$(".save").forEach(b=>b.dataset.l=b.textContent);
 
 function reset(s){
-  $$(".chips",s).forEach(c=>buildChips(c));
+  $$(".chips[data-name]",s).forEach(c=>buildChips(c));
   $$("textarea,input[type=number]",s).forEach(i=>i.value="");
   const o=$(".tslot",s)._o;o.manual=false;o.inp.classList.add("hide");o.btn.classList.remove("hide");tick();
   const sv=$(".save",s);sv.textContent=sv.dataset.l;
