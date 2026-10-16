@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="3">
+<meta name="app-version" content="4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dnevnik">
@@ -216,7 +216,7 @@ select{font:inherit;color:inherit;background:var(--card);border:2px solid var(--
 </template>
 
 <script>
-const VER=3;
+const VER=4;
 const OPTS={
  symptoms:["Glavobolja","Trnci","Vrtoglavica","Mučnina","Aura","Déjà vu","Promjene vida","Čudan miris ili okus","Smetenost","Umor","Tjeskoba ili strah","Trzanje mišića","Drugo"],
  severity:["Blago","Umjereno","Jako"],
@@ -368,10 +368,10 @@ const MK="dnevnikSimptoma.meds";
 const meds=()=>{const m=rd(MK,"{}");m.list=m.list||[];m.d=m.d||{};return m};
 const takenDays=m=>Object.keys(m.d).filter(k=>Object.values(m.d[k]).some(r=>r.m||r.e)).sort();
 function medStat(k){const m=meds(),d=m.d[k]||{},act=m.list.filter(x=>x.f<=k);let g=0;act.forEach(x=>{const r=d[x.n]||{};g+=(r.m?1:0)+(r.e?1:0)});return{t:act.length*2,g}}
-function medColor(k){const f=takenDays(meds())[0];if(!f||k<f||k>todayK())return{};const{t,g}=medStat(k);return t?{c:g===t?"g":g===0?"r":"y"}:{}}
+function medColor(k){const{t,g}=medStat(k);if(!t)return{};if(g>0)return{c:g===t?"g":"y"};const f=takenDays(meds())[0];return f&&k>=f&&k<todayK()?{c:"r"}:{}}
 function symColor(k){const A=load(),ks=A.map(e=>ymd(new Date(e.when))).sort();let n=0,z=0;
   A.forEach(e=>{if(ymd(new Date(e.when))!==k)return;if(e.type==="symptom")n+=(e.symptoms||[]).length;else{n++;z++}});
-  const s=z?"<em>⚡</em>":"";if(!ks.length||k<ks[0]||k>todayK())return{s};return{c:n===0?"g":n===1?"y":n<=3?"o":"r",s}}
+  const s=z?"<em>⚡</em>":"";if(n>0)return{c:n===1?"y":n<=3?"o":"r",s};return ks.length&&k>=ks[0]&&k<=todayK()?{c:"g",s}:{s}}
 
 function mkCal(host,fn,pick){
   const N=new Date(),st={m:new Date(N.getFullYear(),N.getMonth(),1),sel:null};
@@ -401,8 +401,8 @@ function renderMeds(){
   $("#mlist").innerHTML=m.list.filter(x=>x.f<=mday).map(x=>{const q=(m.d[mday]||{})[x.n]||{};
     return `<div class="entry" style="border-color:var(--green)"><b>${esc(x.n)}</b><span>Jutro: ${q.m?"✓ uzeto":"✗ nije"} · Večer: ${q.e?"✓ uzeto":"✗ nije"}</span></div>`}).join("");
 }
-function setDose(names,w,v){const m=meds(),d=m.d[mday]=m.d[mday]||{};names.forEach(n=>{const r=d[n]=d[n]||{};if(w==="a"){r.m=v;r.e=v}else r[w]=v});wr(MK,m)}
-const actNames=()=>meds().list.filter(x=>x.f<=mday).map(x=>x.n);
+function setDose(names,w,v){const m=meds(),d=m.d[mday]=m.d[mday]||{};if(v)m.list.forEach(x=>{if(names.includes(x.n)&&x.f>mday)x.f=mday});names.forEach(n=>{const r=d[n]=d[n]||{};if(w==="a"){r.m=v;r.e=v}else r[w]=v});wr(MK,m)}
+const actNames=()=>meds().list.map(x=>x.n);
 $("#msel").onchange=renderMeds;
 [["m","#bm"],["e","#be"]].forEach(([w,id])=>$(id).onclick=()=>{const n=$("#msel").value;if(!n)return;
   const r=(meds().d[mday]||{})[n]||{};setDose([n],w,r[w]?0:1);renderMeds();if(!r[w])toast("Zabilježeno")});
