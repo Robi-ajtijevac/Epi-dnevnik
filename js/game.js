@@ -12,7 +12,7 @@ function burst(x,y){
     h.animate([{transform:"translate(0,0) scale(.4)",opacity:1},{transform:`translate(${Math.random()*70-35}px,${-(50+Math.random()*60)}px) scale(${.8+Math.random()*.5})`,opacity:0}],
       {duration:800+Math.random()*500,easing:"ease-out",fill:"forwards"}).onfinish=()=>h.remove();
   }
-  hearts++;wr(HK,hearts);updHearts();
+  hearts++;wr(HK,hearts);updHearts();if(hearts%10===0)parade();
 }
 updHearts();
 
@@ -44,3 +44,43 @@ function spawn(){
 if(RMQ.matches)[[8,"silkie"],[38,"polish"],[68,"serama"]].forEach(([p,id])=>{mkChicken(id,56,10,3).style.left=p+"%"});
 else{setInterval(spawn,1400);setTimeout(spawn,150);setTimeout(spawn,900)}
 
+
+// Svaki 10. dodir (10, 20, 30…): leptiri lete preko cijelog ekrana i sipaju čarobnu prašinu
+const PCOL=["#ff8fc0","#ffb457","#b794ff","#6bb8ff","#6fdc9b","#ffd75e"],DCOL=["#ffd75e","#ff8fc0","#fff","#b794ff","#6bb8ff"];
+const STAR=c=>`<svg viewBox="0 0 24 24"><path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z" fill="${c}"/></svg>`;
+let paradeN=0,dustN=0;
+function dust(x,y){
+  if(dustN>70)return;dustN++;
+  const s=7+Math.random()*9,d=document.createElement("span");d.className="dust";d.style.width=d.style.height=s+"px";
+  d.innerHTML=STAR(rnd(DCOL));d.style.transform=`translate(${x}px,${y}px)`;document.body.append(d);
+  const dx=Math.random()*30-15,dy=30+Math.random()*50,end=()=>{d.remove();dustN--};
+  d.animate([{transform:`translate(${x}px,${y}px) scale(1) rotate(0)`,opacity:1},{transform:`translate(${x+dx}px,${y+dy}px) scale(.2) rotate(${Math.random()*180}deg)`,opacity:0}],
+    {duration:700+Math.random()*600,easing:"ease-in",fill:"forwards"}).onfinish=end;
+}
+function parade(){
+  if(paradeN>=2)return;paradeN++;
+  const W=innerWidth,H=innerHeight,N=9,rn=(a,b)=>a+Math.random()*(b-a);
+  if(RMQ.matches){
+    const L=[];for(let i=0;i<N;i++){const b=document.createElement("div");b.className="pb";b.style.color=rnd(PCOL);b.style.width=b.style.height=rn(26,42)+"px";
+      b.innerHTML='<svg viewBox="0 0 32 32"><use href="#bf"/></svg>';b.style.transform=`translate(${rn(10,W-50)}px,${rn(60,H-80)}px)`;b.firstChild.style.animation="none";document.body.append(b);L.push(b)}
+    setTimeout(()=>{L.forEach(b=>b.remove());paradeN--},2400);return;
+  }
+  const bs=[],t0=performance.now();
+  for(let i=0;i<N;i++){
+    const el=document.createElement("div"),s=rn(26,44),fromL=Math.random()<.5;
+    el.className="pb";el.style.color=rnd(PCOL);el.style.width=el.style.height=s+"px";el.style.opacity="0";
+    el.innerHTML='<svg viewBox="0 0 32 32"><use href="#bf"/></svg>';document.body.append(el);
+    bs.push({el,s,x0:fromL?-60:W+60,x1:fromL?W+60:-60,y:rn(H*.15,H*.85),A:rn(H*.08,H*.22),A2:rn(10,40),f:rn(1.2,2.6),f2:rn(3,6),ph:rn(0,6.3),dur:rn(5500,8500),delay:rn(0,1400),last:0});
+  }
+  (function step(now){
+    let alive=0;
+    bs.forEach(b=>{
+      const p=(now-t0-b.delay)/b.dur;if(b.done)return;
+      if(p>=1){b.done=1;b.el.remove();return}alive++;if(p<0)return;
+      const x=b.x0+(b.x1-b.x0)*p,y=b.y+b.A*Math.sin(p*6.28*b.f+b.ph)+b.A2*Math.sin(p*6.28*b.f2);
+      b.el.style.opacity="1";b.el.style.transform=`translate(${x-b.s/2}px,${y-b.s/2}px)`;
+      if(now-b.last>110){b.last=now;dust(x+Math.random()*10-5,y+b.s*.2)}
+    });
+    if(alive)requestAnimationFrame(step);else paradeN--;
+  })(t0);
+}

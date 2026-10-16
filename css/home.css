@@ -40,3 +40,18 @@ h1 .ck{animation:sway 2.5s ease-in-out infinite alternate}
 .i1{background:#c3a6ff}.i2{background:#fff;border:3px solid #ff5c7a}.i3{background:#ffd75e}.i4{background:#6bb8ff}
 .hint{color:var(--mute);font-size:.95rem;text-align:center;margin:18px 0 0}
 .ic{gap:6px}
+/* gumb Natrag s gnijezdom */
+.link.back{display:inline-flex;align-items:center;gap:4px;background:var(--card);border-radius:999px;padding:3px 16px 3px 8px;margin-bottom:8px;text-decoration:none;color:var(--ink);font-weight:700;font-size:.95rem;box-shadow:0 3px 0 rgba(90,42,66,.15);transition:transform .12s,box-shadow .12s}
+.link.back .ck{width:36px;height:36px}
+.link.back:active{transform:translateY(3px);box-shadow:none}
+.link.back:active .ck{animation:peck .5s}
+/* mali kokošinjac na dnu početne */
+.coopbtn{display:block;margin:10px auto 0;background:none;border:0;padding:4px}
+.coopbtn .ck{width:76px;height:76px}
+.coopbtn:active .ck,.coopbtn:focus-visible .ck{animation:peck .5s}
+@media (hover:hover){.coopbtn:hover .ck{animation:peck .5s}}
+/* leptiri i čarobna prašina (svaki 10. dodir) */
+.pb{position:fixed;left:0;top:0;pointer-events:none;z-index:70;will-change:transform}
+.pb svg{width:100%;height:100%;animation:flap .2s ease-in-out infinite alternate}
+.dust{position:fixed;left:0;top:0;pointer-events:none;z-index:69}
+.dust svg{display:block;width:100%;height:100%}

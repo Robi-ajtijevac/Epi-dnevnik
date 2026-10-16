@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="8">
+<meta name="app-version" content="9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dnevnik">
@@ -30,7 +30,6 @@
 <main>
 <section id="home">
   <h1><svg class="ck" data-b="silkie"></svg>Dnevnik simptoma i napadaja</h1>
-  <p class="sub">Što želite napraviti?</p>
   <button class="big c1" data-go="happened">Nešto se dogodilo<small>Simptom ili napadaj</small><svg class="ck" data-b="polish"></svg></button>
   <button class="big c6" data-go="today" >Danas<small id="todaysub">Dodaj ili uredi trajanje</small><svg class="ck" data-b="serama"></svg></button>
   <button class="big c3" data-go="medmenu">Lijekovi<small>Jutarnja i večernja doza</small><svg class="ck" data-b="pills"></svg></button>
@@ -45,11 +44,11 @@
     <i class="bush" style="left:3%;width:74px"></i><i class="bush" style="left:41%;width:82px"></i><i class="bush" style="left:76%;width:72px"></i>
     <div class="bfly b1"><svg><use href="#bf"/></svg></div><div class="bfly b2"><svg><use href="#bf"/></svg></div>
   </div>
-  <button class="link" data-go="coop" style="display:block;margin:12px auto 0">Upoznaj 15 slatkih kokoši ›</button>
+  <button class="coopbtn" data-go="coop" aria-label="Kokošinjac"><svg class="ck" data-b="coop"></svg></button>
 </section>
 
 <section id="happened" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Nešto se dogodilo<svg class="ck" data-b="polish"></svg></h2>
   <p class="sub">Što želite zabilježiti?</p>
   <button class="big c1" data-go="symptom">Simptom<small>Glavobolja, trnci, aura…</small><svg class="ck" data-b="silkie"></svg></button>
@@ -57,7 +56,7 @@
 </section>
 
 <section id="today" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Danas<svg class="ck" data-b="serama"></svg></h2>
   <button type="button" class="sw" id="dsw" role="switch" aria-checked="false" aria-label="Prikaži dnevnu provjeru">
     <span class="kn"><svg class="ck a" data-b="silkie"></svg><svg class="ck z" data-b="sleepy"></svg></span>
@@ -88,7 +87,7 @@
 </section>
 
 <section id="medmenu" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Lijekovi<svg class="ck" data-b="pills"></svg></h2>
   <p class="sub">Odaberite što želite otvoriti.</p>
   <button class="big c3" data-go="meds">Lijekovi<small>Jutarnja i večernja doza, kalendar</small><svg class="ck" data-b="pills"></svg></button>
@@ -96,7 +95,7 @@
 </section>
 
 <section id="symptom" class="hide">
-  <button class="link back" data-go="happened">‹ Natrag</button>
+  <button class="link back" data-go="happened"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2>Zabilježi simptom</h2>
   <label class="f">Što ste primijetili? (odaberite sve što vrijedi)</label>
   <div class="chips" data-name="symptoms" data-multi="1"></div>
@@ -113,7 +112,7 @@
 </section>
 
 <section id="seizure" class="hide">
-  <button class="link back" data-go="happened">‹ Natrag</button>
+  <button class="link back" data-go="happened"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2>Zabilježi napadaj</h2>
   <div class="tslot"></div>
   <label class="f">Koliko je trajao?</label>
@@ -141,7 +140,7 @@
 </section>
 
 <section id="meds" class="hide">
-  <button class="link back" data-go="medmenu">‹ Natrag</button>
+  <button class="link back" data-go="medmenu"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Lijekovi<svg class="ck" data-b="pills"></svg></h2>
   <div id="mcal"></div>
   <div class="leg"><span><i style="background:#9be8b4"></i>sve uzeto</span><span><i style="background:#ffe27a"></i>nešto nije uzeto</span><span><i style="background:#ff8a9b"></i>ništa nije uzeto</span></div>
@@ -158,14 +157,14 @@
 </section>
 
 <section id="summ" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Mjesečni sažetak<svg class="ck" data-b="cross"></svg></h2>
   <div class="calh"><button id="sprev" aria-label="Prethodni mjesec">‹</button><b id="smon"></b><button id="snext" aria-label="Sljedeći mjesec">›</button></div>
   <div id="sbody"></div>
 </section>
 
 <section id="card" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Hitna kartica<svg class="ck" data-b="chart"></svg></h2>
   <div id="cview"></div>
   <div id="cedit" class="hide">
@@ -186,7 +185,7 @@
 </section>
 
 <section id="history" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Povijest unosa<svg class="ck" data-b="calendar"></svg></h2>
   <div id="hcal"></div>
   <div class="leg"><span><i style="background:#9be8b4"></i>nema simptoma</span><span><i style="background:#ffe27a"></i>1</span><span><i style="background:#ffb36b"></i>2–3</span><span><i style="background:#ff8a9b"></i>više od 3</span><span>⚡ napadaj</span></div>
@@ -195,7 +194,7 @@
 </section>
 
 <section id="savemenu" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Spremi i pošalji<svg class="ck" data-b="floppy"></svg></h2>
   <p class="sub">Podaci ostaju na ovom uređaju. Odavde ih možete poslati ili spremiti.</p>
   <button class="big c3" id="send">Pošalji datoteku…<small>WhatsApp, Gmail, Poruke i drugo</small><svg class="ck" data-b="sebright"></svg></button>
@@ -205,7 +204,7 @@
 </section>
 
 <section id="coop" class="hide">
-  <button class="link back" data-go="home">‹ Natrag</button>
+  <button class="link back" data-go="home"><svg class="ck" data-b="nest"></svg>‹ Natrag</button>
   <h2 class="hd2">Kokošinjac<span class="hscore" style="font-size:1rem"></span></h2>
   <p class="sub">15 najslađih pasmina. Dodirnite kokoš da joj pošaljete srca.</p>
   <div class="coop" id="coopgrid"></div>

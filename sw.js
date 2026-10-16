@@ -1,4 +1,4 @@
-const C="dnevnik-v8";
+const C="dnevnik-v9";
 // Svaka datoteka aplikacije mora biti na ovom popisu (i na GitHubu), inače se nova verzija ne instalira.
 const FILES=["./","index.html","manifest.json","icon-192.png","icon-512.png",
  "css/base.css","css/home.css","css/screens.css","css/art.css",

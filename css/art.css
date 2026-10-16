@@ -23,5 +23,11 @@
 @keyframes cdp{50%{transform:scale(1.5)}}
 .zz{opacity:0;animation:zz 2.7s ease-in infinite;animation-delay:var(--zd,0s)}
 @keyframes zz{0%{opacity:0;transform:translate(-2px,5px)}25%{opacity:1}100%{opacity:0;transform:translate(4px,-6px)}}
+/* gnijezdo i kokošinjac */
+.eg{transform-box:fill-box;transform-origin:50% 100%;animation:egw 3.2s ease-in-out infinite}
+.e2{animation-delay:-1.1s}.e3{animation-delay:-2.1s}
+@keyframes egw{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-6deg)}86%{transform:rotate(5deg)}94%{transform:rotate(-2deg)}}
+.cp{animation:cpk 4s ease-in-out infinite}
+@keyframes cpk{0%,15%{transform:translateY(7px)}30%,70%{transform:translateY(0)}85%,100%{transform:translateY(7px)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (prefers-reduced-motion:reduce){.zz{opacity:1}}
